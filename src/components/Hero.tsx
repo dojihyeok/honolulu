@@ -78,7 +78,7 @@ export default function Hero() {
             ))}
 
             <h1 style={{
-                fontSize: '4.5rem', /* Increased from 3.5rem */
+                fontSize: 'clamp(2.8rem, 8vw, 4.5rem)',
                 marginBottom: '1.5rem',
                 textShadow: '0 4px 20px rgba(0,0,0,0.8)',
                 lineHeight: 1.1,
@@ -89,14 +89,17 @@ export default function Hero() {
                 <span style={{ color: '#FFB74D', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>하와이 대모험! 🌴</span>
             </h1>
             <p style={{
-                fontSize: '1.5rem', /* Increased from 1.25rem */
+                fontSize: 'clamp(1.1rem, 4vw, 1.5rem)',
                 maxWidth: '700px',
                 textShadow: '0 2px 10px rgba(0,0,0,0.9)',
                 fontWeight: 600,
                 color: '#F0F9FF',
                 zIndex: 1,
                 lineHeight: 1.6,
-                letterSpacing: '-0.025em'
+                letterSpacing: '-0.025em',
+                wordBreak: 'keep-all',
+                wordWrap: 'break-word',
+                padding: '0 1rem' /* Add side padding for safety */
             }}>
                 엄마 아빠 결혼 10주년과 도헌이 생일 파티를 위한 우리 가족 여행기.<br />
                 진짜 멋진 물고기랑 어마어마한 파도를 봤다. 😎 🌊

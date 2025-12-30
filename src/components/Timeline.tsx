@@ -57,6 +57,7 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
                 ref={videoRef}
                 src={src}
                 playsInline
+                x5-playsinline="true"
                 loop
                 muted={false}
                 preload="none" // Aggressive optimization: Defer loading until play() is called
@@ -272,6 +273,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     gap: 0;
                     width: 100%;
                     border-radius: 4px;
+                    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
                     
                     /* Hide scrollbar */
                     -ms-overflow-style: none;
