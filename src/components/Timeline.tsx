@@ -536,7 +536,12 @@ export default function Timeline({ items }: TimelineProps) {
                 Travel Episodes
             </h2>
 
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', border: '1px solid transparent' }}>
+                {items.length === 0 && (
+                    <div style={{ padding: '2rem', textAlign: 'center', fontSize: '1.5rem', color: 'red' }}>
+                        데이터가 없습니다 (0 items)
+                    </div>
+                )}
                 {items.map((item) => (
                     <TimelineItemView
                         key={item.id}
