@@ -76,20 +76,46 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     const { elementRef, isVisible } = useIntersectionObserver({ triggerOnce: true, threshold: 0.1 });
     const [scrollIndex, setScrollIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+    // Infinite Loop: Clone first item to end
+    const itemCount = item.media?.length || 0;
+    const isInfinite = itemCount > 1;
+    const displayMedia = isInfinite ? [...(item.media || []), item.media![0]] : (item.media || []);
 
     const handleScroll = () => {
         if (scrollContainerRef.current) {
             const { scrollLeft, clientWidth } = scrollContainerRef.current;
             const index = Math.round(scrollLeft / clientWidth);
-            setScrollIndex(index);
+
+            // Normalize index for dots/active state
+            const normalizedIndex = index >= itemCount ? 0 : index;
+            setScrollIndex(normalizedIndex);
+
+            // Infinite Loop Reset Logic
+            if (isInfinite && index === itemCount) {
+                // If we reached the clone (last item), reset to 0 silently
+                if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+
+                // Allow snap to finish visual movement, then reset
+                scrollTimeout.current = setTimeout(() => {
+                    if (scrollContainerRef.current) {
+                        scrollContainerRef.current.scrollTo({ left: 0, behavior: 'auto' }); // Instant jump
+                    }
+                }, 500); // 500ms matches typical snap/scroll duration
+            }
         }
     };
 
     const scrollPrev = () => {
         if (scrollContainerRef.current) {
-            const { scrollLeft, clientWidth, scrollWidth } = scrollContainerRef.current;
-            if (scrollLeft <= 10) { // At start, loop to end
-                scrollContainerRef.current.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+            const { scrollLeft, clientWidth } = scrollContainerRef.current;
+            const index = Math.round(scrollLeft / clientWidth);
+
+            if (index <= 0) {
+                // Loop to last real item
+                const lastRealIndex = itemCount - 1;
+                scrollContainerRef.current.scrollTo({ left: lastRealIndex * clientWidth, behavior: 'smooth' });
             } else {
                 scrollContainerRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
             }
@@ -99,9 +125,10 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     const scrollNext = () => {
         if (scrollContainerRef.current) {
             const { scrollLeft, clientWidth, scrollWidth } = scrollContainerRef.current;
-            // Tolerance to detect end
-            if (scrollLeft + clientWidth >= scrollWidth - 10) { // At end, loop to start
-                scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+            // Simply scroll next. If it hits the clone, handleScroll takes care of reset.
+            if (scrollLeft + clientWidth >= scrollWidth - 5) {
+                // Safety: If already at end (Clone) and logic didn't trigger, force reset Loop
+                scrollContainerRef.current.scrollTo({ left: 0, behavior: 'instant' as any });
             } else {
                 scrollContainerRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
             }
@@ -137,10 +164,10 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     </p>
 
                     {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
-                    {item.media && item.media.length > 0 && (
+                    {displayMedia.length > 0 && (
                         <div className="carousel-container" style={{ position: 'relative' }}>
                             <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
-                                {item.media.map((mediaItem, idx) => (
+                                {displayMedia.map((mediaItem, idx) => (
                                     <div
                                         key={idx}
                                         className="image-wrapper"
@@ -148,7 +175,9 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                         {mediaItem.type === 'video' ? (
                                             <VideoItem
                                                 src={mediaItem.src}
-                                                isActive={idx === scrollIndex}
+                                                // Active if scrollIndex matches current index (for real items)
+                                                // OR if we are at clone (idx === itemCount) and scrollIndex is 0
+                                                isActive={scrollIndex === (idx >= itemCount ? 0 : idx)}
                                             />
                                         ) : (
                                             <img
@@ -162,7 +191,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             </div>
 
                             {/* Navigation Arrows */}
-                            {item.media.length > 1 && (
+                            {itemCount > 1 && (
                                 <>
                                     <button
                                         className="nav-btn prev visible"
@@ -182,9 +211,9 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             )}
 
                             {/* Mobile Pagination Dots */}
-                            {item.media.length > 1 && (
+                            {itemCount > 1 && (
                                 <div className="mobile-dots">
-                                    {item.media.map((_, idx) => (
+                                    {item.media?.map((_, idx) => (
                                         <div
                                             key={idx}
                                             className={`dot ${idx === scrollIndex ? 'active' : ''}`}
