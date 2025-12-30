@@ -41,4 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # Local large video files (Manual upload required)
-public/images/real/*.mp4
+# Local large video files (Manual upload required)
+# public/images/real/*.mp4
