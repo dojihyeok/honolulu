@@ -245,8 +245,14 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
             }}
         >
             {/* Content Card - Always rendered and visible */}
-            <div className="timeline-card">
-                <div className="timeline-header">
+            <div className="timeline-card" style={{
+                background: 'var(--card)',
+                borderRadius: 'var(--radius)',
+                overflow: 'hidden',
+                border: '1px solid var(--border)',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+            }}>
+                <div className="timeline-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 1.5rem 0.5rem 1.5rem' }}>
                     <span className="timeline-date">
                         {item.date} • {item.time}
                     </span>
@@ -282,6 +288,13 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                     <div
                                         key={idx}
                                         className="image-wrapper"
+                                        style={{
+                                            position: 'relative',
+                                            height: '500px',
+                                            width: '100%',
+                                            overflow: 'hidden',
+                                            flex: '0 0 100%'
+                                        }}
                                     >
                                         {mediaItem.type === 'video' ? (
                                             <VideoItem
@@ -531,7 +544,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
 export default function Timeline({ items }: TimelineProps) {
     return (
-        <div className="timeline-container">
+        <div className="timeline-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%' }}>
             <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem', color: 'var(--secondary)', wordBreak: 'keep-all' }}>
                 Travel Episodes
             </h2>
