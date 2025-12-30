@@ -37,7 +37,7 @@ const GalleryItemView = ({ item, onClick }: { item: GalleryItem; onClick: (item:
                         src={item.src}
                         muted
                         playsInline
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                     />
                     <div className="play-icon">▶</div>
                 </div>
@@ -45,7 +45,7 @@ const GalleryItemView = ({ item, onClick }: { item: GalleryItem; onClick: (item:
                 <img
                     src={item.src}
                     alt={item.alt}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                 />
             )}
 

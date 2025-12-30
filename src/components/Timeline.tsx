@@ -64,7 +64,10 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
             style={{
                 cursor: 'pointer',
                 background: '#000',
-                position: 'relative'
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             }}
         >
             <video
@@ -78,7 +81,8 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover',
+                    objectFit: 'contain', // Changed to contain to prevent cropping vertical videos
+                    objectPosition: 'center', // Ensure centered content
                     display: 'block'
                 }}
             >
@@ -302,7 +306,8 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                             height: '500px',
                                             width: '100%',
                                             overflow: 'hidden',
-                                            flex: '0 0 100%'
+                                            flex: '0 0 100%',
+                                            background: 'black'
                                         }}
                                     >
                                         {mediaItem.type === 'video' ? (
@@ -317,7 +322,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                                 alt={mediaItem.alt || `Trip photo ${idx + 1}`}
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, 800px"
-                                                style={{ objectFit: 'cover' }}
+                                                style={{ objectFit: 'contain' }}
                                                 priority={idx === 0} // Prioritize first image
                                             />
                                         )}
@@ -533,17 +538,30 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
                 @media (max-width: 768px) {
                     .image-wrapper {
-                        height: 400px;
+                        height: auto !important;
+                        aspect-ratio: 3 / 4; /* Portrait 4:3 */
                     }
                     .timeline-card {
                         border-radius: 0; 
                         box-shadow: none;
                         border-left: none;
                         border-right: none;
+                        border-top: none; /* Ensure no top border */
+                        border-bottom: 1px solid var(--border); /* Optional separator */
                     }
                     .timeline-title {
                         font-size: 1.75rem;
-                         word-break: keep-all;
+                        word-break: keep-all;
+                        padding: 0 1rem; /* Ensure title has padding */
+                    }
+                    .timeline-desc {
+                        display: none;
+                    }
+                    /* Ensure full width for container */
+                    .timeline-container {
+                         width: 100vw;
+                         max-width: 100vw;
+                         padding: 2rem 0 !important;
                     }
                 }
             `}</style>
@@ -553,8 +571,8 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
 export default function Timeline({ items }: TimelineProps) {
     return (
-        <div className="timeline-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem', width: '100%' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem', color: 'var(--secondary)', wordBreak: 'keep-all' }}>
+        <div className="timeline-container" style={{ maxWidth: '800px', margin: '0 auto', width: '100%' }}>
+            <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem', color: 'var(--secondary)', wordBreak: 'keep-all' }}>
                 Travel Episodes
             </h2>
 
@@ -576,11 +594,15 @@ export default function Timeline({ items }: TimelineProps) {
                 .timeline-container {
                     max-width: 800px;
                     margin: 0 auto;
-                    padding: 4rem 1.5rem;
+                    padding: 4rem 1.5rem; /* Default Desktop Padding */
                 }
                 @media (max-width: 768px) {
                     .timeline-container {
-                        padding: 2rem 0.5rem; /* Reduce padding significantly on mobile */
+                        padding: 2rem 0 !important; /* Full width on mobile */
+                    }
+                    /* Add padding back to title since container lost it */
+                    .timeline-container :global(h2) {
+                        padding: 0 1rem;
                     }
                 }
             `}</style>
