@@ -27,6 +27,9 @@ class ErrorBoundary extends Component<Props, State> {
 
     public render() {
         if (this.state.hasError) {
+            const isChunkError = this.state.error?.toString().includes("Loading chunk") ||
+                this.state.error?.toString().includes("Failed to load chunk");
+
             return (
                 <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
                     <h2>Something went wrong.</h2>
@@ -34,7 +37,13 @@ class ErrorBoundary extends Component<Props, State> {
                         {this.state.error && this.state.error.toString()}
                     </details>
                     <button
-                        onClick={() => this.setState({ hasError: false, error: null })}
+                        onClick={() => {
+                            if (isChunkError) {
+                                window.location.reload();
+                            } else {
+                                this.setState({ hasError: false, error: null });
+                            }
+                        }}
                         style={{
                             marginTop: '1rem',
                             padding: '0.5rem 1rem',
@@ -45,7 +54,7 @@ class ErrorBoundary extends Component<Props, State> {
                             cursor: 'pointer'
                         }}
                     >
-                        Try Again
+                        {isChunkError ? "Reload Page (New Version Available)" : "Try Again"}
                     </button>
                 </div>
             );

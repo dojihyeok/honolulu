@@ -16,7 +16,7 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [progress, setProgress] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
-    const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay policy
+    const [isMuted, setIsMuted] = useState(false); // Start unmuted as requested
 
     // Refs
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -25,13 +25,7 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
     const PROGRESS_UPDATE_MS = 50;
 
     // Reset state when opening or changing index externally
-    useEffect(() => {
-        if (isOpen) {
-            setCurrentIndex(initialIndex);
-            setProgress(0);
-            setIsPaused(false);
-        }
-    }, [isOpen, initialIndex]);
+
 
     // Handle navigation
     const goNext = useCallback(() => {
@@ -172,14 +166,7 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
                         <h3 className="story-title">{title}</h3>
                     </div>
                     <div className="story-controls">
-                        {currentItem.type === 'video' && (
-                            <button
-                                className="mute-btn"
-                                onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}
-                            >
-                                {isMuted ? '🔇' : '🔊'}
-                            </button>
-                        )}
+
                         <button className="close-btn" onClick={onClose}>&times;</button>
                     </div>
                 </div>

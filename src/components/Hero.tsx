@@ -1,22 +1,46 @@
 'use client';
 
 import React from 'react';
+import { REAL_TIMELINE } from '@/data/real';
+
 // Hero & Header
 export default function Hero() {
     // Background Image Slideshow
     const [currentBgIndex, setCurrentBgIndex] = React.useState(0);
-    const bgImages = [
-        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80', // Waikiki Beach (Day)
-        'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1920&q=80', // Turtles/Ocean
-        'https://images.unsplash.com/photo-1444491741275-3747c53c99b4?auto=format&fit=crop&w=1920&q=80'  // Palm Trees Sunset (Reliable)
-    ];
+    const [bgImages, setBgImages] = React.useState<string[]>([]);
 
     React.useEffect(() => {
+        // Flatten all images from the real timeline
+        const allImages = REAL_TIMELINE.flatMap(item => item.media || [])
+            .filter(m => m.type === 'image')
+            .map(m => m.src);
+
+        // Shuffle and pick 5 random images
+        // We use a simple shuffle algorithm here
+        const shuffled = [...allImages].sort(() => Math.random() - 0.5);
+        const selected = shuffled.slice(0, 5);
+
+        // If we have less than 5, just use what we have (or stick to defaults if 0)
+        if (selected.length > 0) {
+            setBgImages(selected);
+        } else {
+            // Fallback to stock if no images found
+            setBgImages([
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80',
+                'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1920&q=80',
+                'https://images.unsplash.com/photo-1444491741275-3747c53c99b4?auto=format&fit=crop&w=1920&q=80'
+            ]);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (bgImages.length === 0) return;
+
         const interval = setInterval(() => {
             setCurrentBgIndex((prev) => (prev + 1) % bgImages.length);
         }, 7000); // Change every 7 seconds
         return () => clearInterval(interval);
-    }, [bgImages.length]);
+    }, [bgImages]);
 
     return (
         <div style={{
@@ -71,7 +95,8 @@ export default function Hero() {
                 fontWeight: 600,
                 color: '#F0F9FF',
                 zIndex: 1,
-                lineHeight: 1.6
+                lineHeight: 1.6,
+                letterSpacing: '-0.025em'
             }}>
                 엄마 아빠 결혼 10주년과 도헌이 생일 파티를 위한 우리 가족 여행기.<br />
                 진짜 멋진 물고기랑 어마어마한 파도를 봤다. 😎 🌊

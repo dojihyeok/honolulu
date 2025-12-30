@@ -18,11 +18,9 @@ interface TimelineProps {
 interface VideoItemProps {
     src: string;
     isActive: boolean;  // Is this specific slide currently active/centered?
-    isMuted: boolean;
-    onToggleMute: () => void;
 }
 
-const VideoItem = ({ src, isActive, isMuted, onToggleMute }: VideoItemProps) => {
+const VideoItem = ({ src, isActive }: VideoItemProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const { elementRef, isVisible } = useIntersectionObserver({ threshold: 0.5, triggerOnce: false });
 
@@ -35,7 +33,7 @@ const VideoItem = ({ src, isActive, isMuted, onToggleMute }: VideoItemProps) => 
         // 1. The video element is visible in viewport (>50%)
         // 2. It is the active slide in the carousel
         if (isVisible && isActive) {
-            video.muted = isMuted;
+            video.muted = false; // Always play with sound
             const playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise.catch(() => {
@@ -45,23 +43,14 @@ const VideoItem = ({ src, isActive, isMuted, onToggleMute }: VideoItemProps) => 
         } else {
             video.pause();
         }
-    }, [isVisible, isActive, isMuted]);
+    }, [isVisible, isActive]);
 
-    // Also sync muted property directly
-    useEffect(() => {
-        if (videoRef.current) {
-            videoRef.current.muted = isMuted;
-        }
-    }, [isMuted]);
+
 
     return (
         <div
             ref={elementRef}
             className="video-thumbnail"
-            onClick={(e) => {
-                e.stopPropagation();
-                onToggleMute();
-            }}
             style={{ cursor: 'pointer' }}
         >
             <video
@@ -69,13 +58,10 @@ const VideoItem = ({ src, isActive, isMuted, onToggleMute }: VideoItemProps) => 
                 src={src}
                 playsInline
                 loop
-                muted={isMuted}
+                muted={false}
                 preload="none" // Aggressive optimization: Defer loading until play() is called
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-            <div className="mute-indicator">
-                {isMuted ? '🔇' : '🔊'}
-            </div>
         </div>
     );
 };
@@ -88,9 +74,6 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     // This prevents "Layout Thrashing" and scroll stutter on mobile
     const { elementRef, isVisible } = useIntersectionObserver({ triggerOnce: true, threshold: 0.1 });
     const [scrollIndex, setScrollIndex] = useState(0);
-    // Key: index, Value: isMuted boolean (default true if undefined)
-    const [mutedStates, setMutedStates] = useState<Record<number, boolean>>({});
-
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
@@ -122,16 +105,6 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 scrollContainerRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
             }
         }
-    };
-
-    const toggleMute = (idx: number) => {
-        setMutedStates(prev => {
-            const currentMuted = prev[idx] ?? true; // Default to muted
-            return {
-                ...prev,
-                [idx]: !currentMuted
-            };
-        });
     };
 
     return (
@@ -175,17 +148,12 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                             <VideoItem
                                                 src={mediaItem.src}
                                                 isActive={idx === scrollIndex}
-                                                isMuted={mutedStates[idx] ?? true}
-                                                onToggleMute={() => toggleMute(idx)}
                                             />
                                         ) : (
-                                            <Image
+                                            <img
                                                 src={mediaItem.src}
                                                 alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                                fill
-                                                sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 800px" // Optimized for mobile
-                                                quality={25} // Aggressive compression
-                                                style={{ objectFit: 'cover' }}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                                             />
                                         )}
                                     </div>
@@ -335,21 +303,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     background: black;
                 }
                 
-                .mute-indicator {
-                    position: absolute;
-                    bottom: 10px;
-                    right: 10px;
-                    background: rgba(0,0,0,0.6);
-                    color: white;
-                    border-radius: 50%;
-                    width: 30px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 0.9rem;
-                    pointer-events: none;
-                }
+
                 
                 /* Navigation Buttons */
                 .nav-btn {
@@ -434,7 +388,7 @@ export default function Timeline({ items }: TimelineProps) {
     return (
         <div className="timeline-container">
             <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem', color: 'var(--secondary)', wordBreak: 'keep-all' }}>
-                Travel Schedule
+                Travel Episodes
             </h2>
 
             <div style={{ position: 'relative' }}>

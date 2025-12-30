@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { GalleryItem } from '@/data/dummy';
+import { GalleryItem, MediaItem } from '@/data/dummy';
 import Lightbox from '@/components/Lightbox';
 
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
@@ -84,7 +84,7 @@ export default function Gallery({ items }: GalleryProps) {
     // Actually GalleryItem has type, src, alt, which matches Lightbox expectations mostly.
     // However, Lightbox expects MediaItem[], GalleryItem has width/height which are extra but fine.
     // We just need to ensure 'type' is present.
-    const allMedia: any[] = items;
+    const allMedia: MediaItem[] = items;
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 1rem' }}>

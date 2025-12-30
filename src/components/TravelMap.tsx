@@ -7,7 +7,7 @@ import { TimelineItem } from '@/data/dummy';
 import L from 'leaflet';
 
 // Fix Leaflet's default icon path issues in React
-// @ts-expect-error
+// @ts-expect-error: Leaflet's default icon path issue
 delete L.Icon.Default.prototype._getIconUrl;
 
 const DefaultIcon = L.icon({

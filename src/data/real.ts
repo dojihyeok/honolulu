@@ -6,7 +6,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "date": "2025. 12. 19.",
         "time": "07:30 PM",
         "title": "출발 전 라운지 탐방 후 비행기 출발",
-        "description": "인천국제공항에 왔다. 정말 멋진 곳이었다.",
+        "description": "설레는 하와이 여행의 시작, 인천국제공항!",
         "tags": [
             "Trip",
             "저녁",
@@ -60,7 +60,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 37.447,
             "lng": 126.448
         },
-        "region": "인천국제공항"
+        "region": "인천국제공항 제1여객터미널"
     },
     {
         "id": "story_2",
@@ -91,14 +91,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.3296235,
             "lng": -157.9166465
         },
-        "region": "호놀룰루 공항"
+        "region": "Daniel K. Inouye Int'l Airport"
     },
     {
         "id": "story_3",
         "date": "2025. 12. 19.",
         "time": "12:03 PM",
         "title": "메리어트 리조트 도착 후 주변 탐방",
-        "description": "햇살이 쨍쨍해서 바다 색깔이 더 예뻐 보였다.",
+        "description": "체크인 후 리조트 주변 산책하며 하와이 분위기 만끽.",
         "tags": [
             "Trip",
             "점심 시간",
@@ -170,7 +170,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.274036799999998,
             "lng": -157.82220799972222
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Marriott Resort"
     },
     {
         "id": "story_4",
@@ -237,14 +237,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.27620029972222,
             "lng": -157.82287569972223
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach (Kalakaua Ave)"
     },
     {
         "id": "story_5",
         "date": "2025. 12. 20.",
         "time": "10:25 AM",
         "title": "와이키키 해변 오전 물놀이 시작~",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "에메랄드빛 와이키키 해변에서 즐기는 신나는 물놀이!",
         "tags": [
             "Trip",
             "오전",
@@ -358,7 +358,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.272674599722222,
             "lng": -157.82412389972222
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach"
     },
     {
         "id": "story_6",
@@ -509,7 +509,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.27647819972222,
             "lng": -157.8235674
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Center"
     },
     {
         "id": "story_7",
@@ -636,14 +636,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.27787209972222,
             "lng": -157.82693179999998
         },
-        "region": "와이키키 해변"
+        "region": "International Market Place"
     },
     {
         "id": "story_8",
         "date": "2025. 12. 20.",
         "time": "06:50 PM",
         "title": "와이키키 해변에서의 아름다운 석양 🌅",
-        "description": "시원한 바람이 불어서 기분이 좋았다.",
+        "description": "와이키키 해변의 환상적인 석양을 바라보며.",
         "tags": [
             "Trip",
             "해질 무렵",
@@ -769,14 +769,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.280796799999997,
             "lng": -157.82799359999999
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Sunset"
     },
     {
         "id": "story_9",
         "date": "2025. 12. 21.",
         "time": "08:49 AM",
         "title": "와이키키 해변에서의 상쾌한 아침 시작! ☀️",
-        "description": "아침 일찍 바다에 나왔다. 물이 반짝반짝 빛나서 참 예뻤다.",
+        "description": "상쾌한 아침 공기와 함께 와이키키 해변 산책.",
         "tags": [
             "Trip",
             "이른 아침",
@@ -902,7 +902,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.2736242,
             "lng": -157.82417069972223
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Morning"
     },
     {
         "id": "story_10",
@@ -1347,14 +1347,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.2634523,
             "lng": -157.8056516
         },
-        "region": "와이키키 해변"
+        "region": "Diamond Head State Monument"
     },
     {
         "id": "story_11",
         "date": "2025. 12. 21.",
         "time": "05:25 PM",
         "title": "와이키키 해변에서의 아름다운 석양 🌅",
-        "description": "시원한 바람이 불어서 기분이 좋았다.",
+        "description": "붉게 물든 하늘과 야자수가 어우러진 아름다운 노을.",
         "tags": [
             "Trip",
             "해질 무렵",
@@ -1558,57 +1558,15 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.27431759972222,
             "lng": -157.8245861997222
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Sunset"
     },
-    {
-        "id": "story_12",
-        "date": "2025. 12. 21.",
-        "time": "09:12 PM",
-        "title": "와이키키 해변 탐방! 🌴",
-        "description": "바다 색깔이 에메랄드 색이었다.",
-        "tags": [
-            "Trip",
-            "저녁",
-            "와이키키 해변"
-        ],
-        "media": [
-            {
-                "type": "image",
-                "src": "/images/real/1766772414540.jpg",
-                "width": 4032,
-                "height": 3024
-            },
-            {
-                "type": "image",
-                "src": "/images/real/1766772414632.jpg",
-                "width": 4032,
-                "height": 3024
-            },
-            {
-                "type": "image",
-                "src": "/images/real/1766772414438.jpg",
-                "width": 4032,
-                "height": 3024
-            },
-            {
-                "type": "image",
-                "src": "/images/real/1766772414342.jpg",
-                "width": 4032,
-                "height": 3024
-            }
-        ],
-        "location": {
-            "lat": 21.27520833333333,
-            "lng": -157.82318055555555
-        },
-        "region": "와이키키 해변"
-    },
+
     {
         "id": "story_13",
         "date": "2025. 12. 22.",
         "time": "09:33 AM",
         "title": "아사이볼로 시작하는 모닝 식사",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "아일랜드 빈티지 커피의 아사이볼로 상큼한 아침!",
         "tags": [
             "Trip",
             "오전",
@@ -1668,7 +1626,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.27284459972222,
             "lng": -157.82319659972222
         },
-        "region": "와이키키 해변"
+        "region": "Island Vintage Coffee"
     },
     {
         "id": "story_14",
@@ -2160,14 +2118,15 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "location": {
             "lat": 21.484892699722224,
             "lng": -157.8478579
-        }
+        },
+        "region": "Polynesian Cultural Center"
     },
     {
         "id": "story_15",
         "date": "2025. 12. 22.",
         "time": "04:27 PM",
         "title": "오후의 여유로운 순간들 ✨",
-        "description": "하와이에서의 오후. 날씨가 참 좋았다.",
+        "description": "폴리네시안 문화 센터에서 즐기는 여유로운 오후.",
         "tags": [
             "Trip",
             "오후",
@@ -2322,14 +2281,15 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "location": {
             "lat": 21.641566666666666,
             "lng": -157.92169166666665
-        }
+        },
+        "region": "North Shore (PCC)"
     },
     {
         "id": "story_16",
         "date": "2025. 12. 22.",
         "time": "07:17 PM",
-        "title": "알로힐라니 리조트 모닝 수영으로 시작하는 하루",
-        "description": "저녁을 먹고 나니 잠이 솔솔 왔다.",
+        "title": "폴리네시안 문화 센터에서 공연",
+        "description": "화려한 불쇼와 전통 춤, 웅장한 공연을 관람하며.",
         "tags": [
             "Trip",
             "저녁",
@@ -2442,14 +2402,15 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "location": {
             "lat": 21.638031299999998,
             "lng": -157.92100499999998
-        }
+        },
+        "region": "Polynesian Cultural Center"
     },
     {
         "id": "story_17",
         "date": "2025. 12. 23.",
         "time": "09:53 AM",
-        "title": "와이키키 해변 탐방! 🌴",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "title": "알로힐라니 리조트 모닝 수영으로 시작하는 하루",
+        "description": "오션뷰 인피니티 풀에서 즐기는 상쾌한 아침 수영.",
         "tags": [
             "Trip",
             "오전",
@@ -2779,14 +2740,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.274727777777777,
             "lng": -157.82345555555554
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Morning"
     },
     {
         "id": "story_18",
         "date": "2025. 12. 23.",
         "time": "04:54 PM",
         "title": "와이키키 노을 산책",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "낭만적인 와이키키의 일몰 감상.",
         "tags": [
             "Trip",
             "오후",
@@ -2942,14 +2903,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.274575299722223,
             "lng": -157.82428039972223
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach Sunset"
     },
     {
         "id": "story_19",
         "date": "2025. 12. 23.",
         "time": "08:50 PM",
         "title": "와이키키 맛집 투어",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "맛있는 저녁 식사와 함께하는 와이키키 맛집 투어.",
         "tags": [
             "Trip",
             "저녁",
@@ -3129,14 +3090,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.279183333333332,
             "lng": -157.83108611111112
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Town"
     },
     {
         "id": "story_20",
         "date": "2025. 12. 24.",
         "time": "11:22 AM",
         "title": "와이키키 해변 탐방! 🌴",
-        "description": "렌탈 하기위한 현지인",
+        "description": "서핑보드 빌려서 본격적인 와이키키 즐기기!",
         "tags": [
             "Trip",
             "오전",
@@ -3154,14 +3115,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.276409299999997,
             "lng": -157.82537149972222
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach"
     },
     {
         "id": "story_21",
         "date": "2025. 12. 24.",
         "time": "01:58 PM",
         "title": "래니카이 비치에서 스노쿨링",
-        "description": "시원한 음료수를 마시니까 더위가 싹 날아갔다.",
+        "description": "천국 같은 래니카이 비치에서 즐기는 스노쿨링.",
         "tags": [
             "Trip",
             "점심 시간",
@@ -3412,14 +3373,15 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "location": {
             "lat": 21.3933761,
             "lng": -157.71530479999998
-        }
+        },
+        "region": "Lanikai Beach"
     },
     {
         "id": "story_22",
         "date": "2025. 12. 24.",
         "time": "05:06 PM",
         "title": "The Pig and The Lady에서 저녁 식사 후 드라이브",
-        "description": "시원한 바람이 불어서 기분이 좋았다.",
+        "description": "The Pig and The Lady에서 맛있는 저녁 식사.",
         "tags": [
             "Trip",
             "해질 무렵",
@@ -3665,14 +3627,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.2824971,
             "lng": -157.7981564
         },
-        "region": "와이키키 해변"
+        "region": "The Pig and The Lady"
     },
     {
         "id": "story_23",
         "date": "2025. 12. 25.",
         "time": "11:48 AM",
         "title": "GOOFY Cafe & Dine 에서 즐기는 아점",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "GOOFY Cafe & Dine에서 즐기는 신선한 로컬 브런치.",
         "tags": [
             "Trip",
             "오전",
@@ -3750,7 +3712,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.2843127,
             "lng": -157.83682089972223
         },
-        "region": "와이키키 해변"
+        "region": "Goofy Cafe & Dine"
     },
     {
         "id": "story_24",
@@ -3865,14 +3827,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.282525,
             "lng": -157.83865277777778
         },
-        "region": "와이키키 해변"
+        "region": "Hilton Hawaiian Village"
     },
     {
         "id": "story_25",
         "date": "2025. 12. 25.",
         "time": "04:32 PM",
         "title": "탄날루스 전망대에서 추억 만들기",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "탄날루스 전망대에서 한눈에 내려다보는 호놀룰루 전경.",
         "tags": [
             "Trip",
             "오후",
@@ -4754,14 +4716,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.2845702,
             "lng": -157.83620899972223
         },
-        "region": "와이키키 해변"
+        "region": "Tantalus Lookout"
     },
     {
         "id": "story_26",
         "date": "2025. 12. 25.",
         "time": "09:58 PM",
         "title": "두번째 위기~ 호텔키가 사라졌다.",
-        "description": "바다 색깔이 에메랄드 색이었다.",
+        "description": "호텔 키 분실로 잠시 당황했지만, 이것도 추억!",
         "tags": [
             "Trip",
             "저녁",
@@ -4779,7 +4741,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.284322222222222,
             "lng": -157.83625833333335
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach (Hyatt Regency)"
     },
     {
         "id": "story_27",
@@ -4822,14 +4784,14 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.617266699722222,
             "lng": -158.08701869972222
         },
-        "region": "거북이 해변 (North Shore)"
+        "region": "Laniakea Beach (North Shore)"
     },
     {
         "id": "story_28",
         "date": "2025. 12. 26.",
         "time": "12:57 PM",
         "title": "Shark's Cove & North Shore Market 투어",
-        "description": "배가 고팠는데 맛있는 걸 먹어서 기분이 좋아졌다.",
+        "description": "샤크스 코브 구경 후 노스쇼어 마켓에서 맛있는 점심.",
         "tags": [
             "Trip",
             "점심 시간",
@@ -5033,7 +4995,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "date": "2025. 12. 26.",
         "time": "06:58 PM",
         "title": "우리 도헌이 9번째 생일 파티 모래는 푱푱하다 푱푱한~",
-        "description": "시원한 바람이 불어서 기분이 좋았다.",
+        "description": "와이키키 해변에서 축하하는 도헌이의 9번째 생일!",
         "tags": [
             "Trip",
             "해질 무렵",
@@ -5111,54 +5073,9 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.28160749972222,
             "lng": -157.8382893
         },
-        "region": "와이키키 해변"
+        "region": "Waikiki Beach (Birthday)"
     },
-    {
-        "id": "story_30",
-        "date": "2025. 12. 26.",
-        "time": "11:06 PM",
-        "title": "하와이에서의 하루를 마무리하며 🌙",
-        "description": "하와이에서의 늦은 밤. 날씨가 참 좋았다.",
-        "tags": [
-            "Trip",
-            "늦은 밤",
-            "Hawaii"
-        ],
-        "media": [
-            {
-                "type": "image",
-                "src": "/images/real/20251226_230611.jpg",
-                "width": 1848,
-                "height": 4000
-            }
-        ]
-    },
-    {
-        "id": "story_31",
-        "date": "2025. 12. 28.",
-        "time": "09:34 PM",
-        "title": "저녁의 여유로운 순간들 ✨",
-        "description": "저녁을 먹고 나니 잠이 솔솔 왔다.",
-        "tags": [
-            "Trip",
-            "저녁",
-            "Hawaii"
-        ],
-        "media": [
-            {
-                "type": "image",
-                "src": "/images/real/20251224_171152.png",
-                "width": 800,
-                "height": 600
-            },
-            {
-                "type": "video",
-                "src": "/images/real/2025_12_26 08_11.mp4",
-                "width": 800,
-                "height": 600
-            }
-        ]
-    }
+
 ];
 
 export const REAL_GALLERY: GalleryItem[] = [
