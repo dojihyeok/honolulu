@@ -23,6 +23,7 @@ interface VideoItemProps {
 const VideoItem = ({ src, isActive }: VideoItemProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const { elementRef, isVisible } = useIntersectionObserver({ threshold: 0.5, triggerOnce: false });
+    const [isMuted, setIsMuted] = useState(true); // Default to muted for autoplay support
 
     // Effect to safely handle play/pause based on visibility and active state
     useEffect(() => {
@@ -33,36 +34,106 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
         // 1. The video element is visible in viewport (>50%)
         // 2. It is the active slide in the carousel
         if (isVisible && isActive) {
-            video.muted = false; // Always play with sound
+            // video.muted = isMuted; // React prop handles this, but explicit sync can be safer
             const playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise.catch(() => {
-                    // Autoplay prevented
+                    // Autoplay prevented (usually shouldn't happen if muted)
                 });
             }
         } else {
             video.pause();
+            if (!isMuted) setIsMuted(true); // Reset to muted if it was playing sound
         }
+
+        // Cleanup function to ensure pause on unmount
+        return () => {
+            video.pause();
+        };
     }, [isVisible, isActive]);
 
-
+    const toggleMute = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent carousel navigation
+        setIsMuted(!isMuted);
+    };
 
     return (
         <div
             ref={elementRef}
             className="video-thumbnail"
-            style={{ cursor: 'pointer' }}
+            style={{
+                cursor: 'pointer',
+                background: '#000',
+                position: 'relative'
+            }}
         >
             <video
                 ref={videoRef}
                 src={src}
                 playsInline
+                // @ts-ignore
                 x5-playsinline="true"
                 loop
-                muted={false}
-                preload="none" // Aggressive optimization: Defer loading until play() is called
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                muted={isMuted}
+                preload="metadata" // Load metadata immediately for fast start
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    display: 'block'
+                }}
             />
+
+            {/* Volume Toggle Button */}
+            <button
+                onClick={toggleMute}
+                className="volume-btn"
+                aria-label={isMuted ? "Unmute" : "Mute"}
+            >
+                {isMuted ? (
+                    // Muted Icon
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM18.529 3.029a.75.75 0 011.06 0A13.98 13.98 0 0124 12c0 3.691-1.42 7.056-3.712 9.734a.75.75 0 01-1.096-.98A12.48 12.48 0 0022.5 12c0-3.297-1.27-6.304-3.321-8.697a.75.75 0 01-1.096-.98z" />
+                        <path d="M8.25 19.5v-15L4.5 9h-2v6h2l3.75 4.5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H9" opacity="0.5" />
+                        <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                ) : (
+                    // Unmuted Icon (Speaker Wave)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM17.78 9.22a.75.75 0 10-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 101.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 101.06-1.06L20.56 12l1.72-1.72a.75.75 0 10-1.06-1.06l-1.72 1.72-1.72-1.72z" />
+                    </svg>
+                )}
+            </button>
+            <style jsx>{`
+                .volume-btn {
+                    position: absolute;
+                    bottom: 15px;
+                    right: 15px;
+                    background: rgba(0, 0, 0, 0.6);
+                    border: none;
+                    border-radius: 50%;
+                    width: 36px;
+                    height: 36px;
+                    padding: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    color: white;
+                    z-index: 10;
+                    transition: transform 0.2s, background 0.2s;
+                    backdrop-filter: blur(4px);
+                }
+                .volume-btn:active {
+                    transform: scale(0.95);
+                    background: rgba(0, 0, 0, 0.8);
+                }
+                .volume-btn svg {
+                    width: 100%;
+                    height: 100%;
+                }
+            `}</style>
         </div>
     );
 };

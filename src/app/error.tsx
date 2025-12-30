@@ -26,7 +26,8 @@ export default function Error({
             // Auto-reload if not reloaded recently (10s)
             if (!lastReload || (now - parseInt(lastReload) > 10000)) {
                 sessionStorage.setItem('chunk_error_reload', now.toString());
-                window.location.reload();
+                // Force reload with cache busting
+                window.location.href = window.location.pathname + '?v=' + now;
             }
         }
     }, [error]);
@@ -53,7 +54,7 @@ export default function Error({
             <button
                 onClick={() => {
                     sessionStorage.setItem('chunk_error_reload', Date.now().toString());
-                    window.location.reload();
+                    window.location.href = window.location.pathname + '?v=' + Date.now();
                 }}
                 style={{
                     padding: '0.8rem 1.5rem',

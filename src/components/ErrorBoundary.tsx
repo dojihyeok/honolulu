@@ -41,7 +41,7 @@ class ErrorBoundary extends Component<Props, State> {
                 // If we haven't reloaded for this reason in the last 10 seconds, do it now
                 if (!lastReload || (now - parseInt(lastReload) > 10000)) {
                     sessionStorage.setItem('chunk_error_reload', now.toString());
-                    window.location.reload();
+                    window.location.href = window.location.pathname + '?v=' + now;
                     return null; // Render nothing while reloading
                 }
             }
@@ -59,7 +59,7 @@ class ErrorBoundary extends Component<Props, State> {
                         onClick={() => {
                             // Force reload on manual click regardless of history
                             sessionStorage.setItem('chunk_error_reload', Date.now().toString());
-                            window.location.reload();
+                            window.location.href = window.location.pathname + '?v=' + Date.now();
                         }}
                         style={{
                             marginTop: '1.5rem',

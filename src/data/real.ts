@@ -642,8 +642,8 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "id": "story_8",
         "date": "2025. 12. 20.",
         "time": "06:50 PM",
-        "title": "와이키키 해변에서의 아름다운 석양 🌅",
-        "description": "와이키키 해변의 환상적인 석양을 바라보며.",
+        "title": "와이키키 비치 야간 산책 & ALOHA MELT",
+        "description": "와이키키 비치 야간 산책 & ALOHA MELT",
         "tags": [
             "Trip",
             "해질 무렵",
@@ -1632,7 +1632,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
         "id": "story_14",
         "date": "2025. 12. 22.",
         "time": "11:42 AM",
-        "title": "온종일 폴리네시안 문화 센터에서 원주민 문화 체험",
+        "title": "폴리네시안 문화 센터에서 원주민 문화 체험 -오전",
         "description": "하루 종일 알차게 즐긴 폴리네시안 문화 체험!",
         "tags": [
             "Trip",
@@ -1753,7 +1753,26 @@ export const REAL_TIMELINE: TimelineItem[] = [
                 "src": "/images/real/1766772414043.jpg",
                 "width": 4032,
                 "height": 3024
-            },
+            }
+        ],
+        "location": {
+            "lat": 21.484892699722224,
+            "lng": -157.8478579
+        },
+        "region": "Polynesian Cultural Center"
+    },
+    {
+        "id": "story_14_2",
+        "date": "2025. 12. 22.",
+        "time": "01:12 PM",
+        "title": "폴리네시안 문화 센터에서 원주민 문화 체험 -오후",
+        "description": "폴리네시안 문화 센터에서 즐기는 오후 체험.",
+        "tags": [
+            "Trip",
+            "오후",
+            "Hawaii"
+        ],
+        "media": [
             {
                 "type": "image",
                 "src": "/images/real/20251222_131246.jpg",
@@ -2282,7 +2301,7 @@ export const REAL_TIMELINE: TimelineItem[] = [
             "lat": 21.641566666666666,
             "lng": -157.92169166666665
         },
-        "region": "North Shore (PCC)"
+        "region": "Polynesian Cultural Center"
     },
     {
         "id": "story_16",

@@ -92,6 +92,16 @@ export const DUMMY_TIMELINE: TimelineItem[] = [
         location: { lat: 21.2969, lng: -157.8560 }, // Somewhere in Honolulu
         media: [img(IMAGES.poke)]
     },
+    {
+        id: '4-5',
+        date: 'Day 2',
+        time: '18:50',
+        title: '와이키키 비치 야간 산책 및 ALOHA MELT',
+        description: '와이키키의 화려한 밤거리를 산책하고, 줄 서서 먹는다는 알로하 멜트에서 인생 그릴드 치즈 샌드위치 흡입!',
+        tags: ['Food', 'Night Walk', 'Waikiki'],
+        location: { lat: 21.2796, lng: -157.8295 }, // Aloha Melt Waikiki
+        media: [img(IMAGES.waikiki)]
+    },
 
     // Day 3: 다이아몬드 헤드
     {
