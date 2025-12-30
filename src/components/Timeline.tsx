@@ -69,7 +69,6 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
         >
             <video
                 ref={videoRef}
-                src={src}
                 playsInline
                 // @ts-ignore
                 x5-playsinline="true"
@@ -82,7 +81,10 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
                     objectFit: 'contain',
                     display: 'block'
                 }}
-            />
+            >
+                <source src={src.replace('.mp4', '_mobile.mp4')} media="(max-width: 768px)" type="video/mp4" />
+                <source src={src} type="video/mp4" />
+            </video>
 
             {/* Volume Toggle Button */}
             <button
@@ -284,10 +286,13 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                                     isActive={scrollIndex === itemRealIndex}
                                                 />
                                             ) : (
-                                                <img
+                                                <Image
                                                     src={mediaItem.src}
                                                     alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, 800px"
+                                                    style={{ objectFit: 'cover' }}
+                                                    priority={idx === 0} // Prioritize first image
                                                 />
                                             )}
                                         </div>
