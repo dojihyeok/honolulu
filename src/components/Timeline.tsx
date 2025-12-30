@@ -351,15 +351,10 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             </>
                         )}
 
-                        {/* Mobile Pagination Dots */}
+                        {/* Mobile Pagination Badge (Premium Style) */}
                         {itemCount > 1 && (
-                            <div className="mobile-dots">
-                                {item.media?.map((_, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`dot ${idx === scrollIndex ? 'active' : ''}`}
-                                    />
-                                ))}
+                            <div className="page-indicator">
+                                {scrollIndex + 1} / {item.media?.length}
                             </div>
                         )}
                     </div>
@@ -510,30 +505,20 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .prev { left: 10px; }
                 .next { right: 10px; }
 
-                .mobile-dots {
-                    display: flex;
+                .page-indicator {
                     position: absolute;
-                    bottom: 15px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    gap: 6px;
+                    top: 15px;
+                    right: 15px;
+                    background: rgba(0, 0, 0, 0.6);
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    backdrop-filter: blur(4px);
                     z-index: 20;
                     pointer-events: none;
-                }
-                
-                .dot {
-                    width: 6px;
-                    height: 6px;
-                    border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.4);
-                    transition: all 0.2s;
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-                }
-                
-                .dot.active {
-                    background: white;
-                    transform: scale(1.2);
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                    letter-spacing: 0.5px;
                 }
 
                 @media (max-width: 768px) {
