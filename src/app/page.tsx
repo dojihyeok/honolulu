@@ -2,6 +2,8 @@ import Hero from '@/components/Hero';
 import TravelJournal from '@/components/TravelJournal';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <main style={{ minHeight: '100vh', background: 'var(--background)' }}>
