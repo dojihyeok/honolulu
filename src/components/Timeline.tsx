@@ -149,60 +149,85 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    // Infinite Loop: Clone first item to end
+    // Infinite Loop: Clone last item to start AND first item to end for bidirectional loop
     const itemCount = item.media?.length || 0;
     const isInfinite = itemCount > 1;
-    const displayMedia = isInfinite ? [...(item.media || []), item.media![0]] : (item.media || []);
+
+    // [Clone Last, ...Real Items, Clone First]
+    const displayMedia = isInfinite
+        ? [item.media![itemCount - 1], ...(item.media || []), item.media![0]]
+        : (item.media || []);
+
+    // Initial Scroll Position (Start at Index 1, which is the first REAL item)
+    useEffect(() => {
+        if (isInfinite && isVisible && scrollContainerRef.current) {
+            const { clientWidth } = scrollContainerRef.current;
+            // Immediate jump to show the first real item (Index 1) instead of the clone (Index 0)
+            scrollContainerRef.current.scrollTo({ left: clientWidth, behavior: 'auto' });
+        }
+    }, [isVisible, isInfinite]);
 
     const handleScroll = () => {
         if (scrollContainerRef.current) {
             const { scrollLeft, clientWidth } = scrollContainerRef.current;
+            if (clientWidth === 0) return;
+
             const index = Math.round(scrollLeft / clientWidth);
 
-            // Normalize index for dots/active state
-            const normalizedIndex = index >= itemCount ? 0 : index;
-            setScrollIndex(normalizedIndex);
+            // Normalize index for dots (Virtual Index 1..N -> Real Index 0..N-1)
+            // If Index 0 (Clone Last) -> Real Index N-1
+            // If Index N+1 (Clone First) -> Real Index 0
+            let realIndex = index - 1;
+            if (realIndex < 0) realIndex = itemCount - 1;
+            if (realIndex >= itemCount) realIndex = 0;
+
+            setScrollIndex(realIndex);
 
             // Infinite Loop Reset Logic
-            if (isInfinite && index === itemCount) {
-                // If we reached the clone (last item), reset to 0 silently
+            if (isInfinite) {
                 if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
-                // Allow snap to finish visual movement, then reset
+                // Use simple timeout to debounce the reset check till after scroll settles
                 scrollTimeout.current = setTimeout(() => {
-                    if (scrollContainerRef.current) {
-                        scrollContainerRef.current.scrollTo({ left: 0, behavior: 'auto' }); // Instant jump
+                    if (!scrollContainerRef.current) return;
+
+                    // Re-measure in case of resize
+                    const currentScroll = scrollContainerRef.current.scrollLeft;
+                    const currentWidth = scrollContainerRef.current.clientWidth;
+                    const currentIndex = Math.round(currentScroll / currentWidth);
+
+                    // Case A: Scrolled to Index 0 (Clone of Last) -> Jump to Real Last (Index N)
+                    if (currentIndex === 0) {
+                        scrollContainerRef.current.scrollTo({
+                            left: itemCount * currentWidth,
+                            behavior: 'auto' // Instant jump
+                        });
                     }
-                }, 500); // 500ms matches typical snap/scroll duration
+                    // Case B: Scrolled to Index N+1 (Clone of First) -> Jump to Real First (Index 1)
+                    else if (currentIndex === itemCount + 1) {
+                        scrollContainerRef.current.scrollTo({
+                            left: currentWidth,
+                            behavior: 'auto' // Instant jump
+                        });
+                    }
+                }, 500); // Wait for scroll animation to finish
             }
         }
     };
 
     const scrollPrev = () => {
         if (scrollContainerRef.current) {
-            const { scrollLeft, clientWidth } = scrollContainerRef.current;
-            const index = Math.round(scrollLeft / clientWidth);
-
-            if (index <= 0) {
-                // Loop to last real item
-                const lastRealIndex = itemCount - 1;
-                scrollContainerRef.current.scrollTo({ left: lastRealIndex * clientWidth, behavior: 'smooth' });
-            } else {
-                scrollContainerRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
-            }
+            const { clientWidth } = scrollContainerRef.current;
+            // Just scroll left. If we hit Index 0 (Clone), handleScroll will reset us to Index N.
+            scrollContainerRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
         }
     };
 
     const scrollNext = () => {
         if (scrollContainerRef.current) {
-            const { scrollLeft, clientWidth, scrollWidth } = scrollContainerRef.current;
-            // Simply scroll next. If it hits the clone, handleScroll takes care of reset.
-            if (scrollLeft + clientWidth >= scrollWidth - 5) {
-                // Safety: If already at end (Clone) and logic didn't trigger, force reset Loop
-                scrollContainerRef.current.scrollTo({ left: 0, behavior: 'instant' as any });
-            } else {
-                scrollContainerRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
-            }
+            const { clientWidth } = scrollContainerRef.current;
+            // Just scroll right. If we hit Index N+1 (Clone), handleScroll will reset us to Index 1.
+            scrollContainerRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
         }
     };
 
@@ -238,27 +263,36 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     {displayMedia.length > 0 && (
                         <div className="carousel-container" style={{ position: 'relative' }}>
                             <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
-                                {displayMedia.map((mediaItem, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="image-wrapper"
-                                    >
-                                        {mediaItem.type === 'video' ? (
-                                            <VideoItem
-                                                src={mediaItem.src}
-                                                // Active if scrollIndex matches current index (for real items)
-                                                // OR if we are at clone (idx === itemCount) and scrollIndex is 0
-                                                isActive={scrollIndex === (idx >= itemCount ? 0 : idx)}
-                                            />
-                                        ) : (
-                                            <img
-                                                src={mediaItem.src}
-                                                alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                                            />
-                                        )}
-                                    </div>
-                                ))}
+                                {displayMedia.map((mediaItem, idx) => {
+                                    // Calculate which "Real Index" (0..N-1) this item represents
+                                    let itemRealIndex = idx;
+                                    if (isInfinite) {
+                                        if (idx === 0) itemRealIndex = itemCount - 1; // Clone of Last
+                                        else if (idx === itemCount + 1) itemRealIndex = 0; // Clone of First
+                                        else itemRealIndex = idx - 1; // Real items shifted by 1
+                                    }
+
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className="image-wrapper"
+                                        >
+                                            {mediaItem.type === 'video' ? (
+                                                <VideoItem
+                                                    src={mediaItem.src}
+                                                    // Active if current scroll state matches this item's real content
+                                                    isActive={scrollIndex === itemRealIndex}
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={mediaItem.src}
+                                                    alt={mediaItem.alt || `Trip photo ${idx + 1}`}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
 
                             {/* Navigation Arrows */}
