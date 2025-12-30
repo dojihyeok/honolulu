@@ -1,33 +1,102 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color Palette - Child's Diary (Fresh Pastel) */
+  --background: #FFFBEB;
+  /* Amber 50 - Warm Cream Paper */
+  --foreground: #4B5563;
+  /* Gray 600 - Pencil Gray */
+
+  --primary: #4ADE80;
+  /* Green 400 - Fresh Mint Green */
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #FACC15;
+  /* Yellow 400 - Duckling Yellow */
+  --secondary-foreground: #451A03;
+
+  --accent: #F472B6;
+  /* Pink 400 - Crayon Pink */
+  --accent-foreground: #FFFFFF;
+
+  --muted: #E0F2FE;
+  /* Sky 100 - Light Clouds */
+  --muted-foreground: #0EA5E9;
+  /* Sky 500 - Sky Blue Marker */
+
+  --card: #FFFFFF;
+  --card-foreground: #4B5563;
+
+  --border: #FCD34D;
+  /* Amber 300 - Yellow Outline */
+  --input: #FCD34D;
+  --ring: #4ADE80;
+
+  --radius: 1.5rem;
+  /* Very rounded, bubbly */
+
+  /* Typography */
+  --font-sans: 'Gaegu', cursive;
+  --font-serif: 'Gaegu', cursive;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Slightly darker paper for dark mode, still warm */
+    --background: #2D2A26;
+    /* Warm Dark Gray */
+    --foreground: #FEF3C7;
+    /* Amber 100 */
+
+    --primary: #22C55E;
+    /* Green 500 */
+    --primary-foreground: #FFFFFF;
+
+    --secondary: #EAB308;
+    /* Yellow 500 */
+    --secondary-foreground: #451A03;
+
+    --accent: #F687B3;
+    /* Pink 400 */
+    --accent-foreground: #FFFFFF;
+
+    --muted: #374151;
+    /* Gray 700 */
+    --muted-foreground: #9CA3AF;
+    /* Gray 400 */
+
+    --card: #1F2937;
+    /* Gray 800 */
+    --card-foreground: #FEF3C7;
+
+    --border: #4B5563;
+    --input: #4B5563;
   }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
 }
 
 a {
@@ -35,8 +104,88 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
   }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Mobile Responsiveness & Utilities */
+@media (max-width: 768px) {
+  :root {
+    font-size: 16px;
+    /* Slightly larger base for better readability */
+    --container-padding: 1rem;
+  }
+
+  .container {
+    padding: 0 var(--container-padding);
+  }
+
+  h1 {
+    font-size: 2.2rem !important;
+  }
+
+  h2 {
+    font-size: 1.75rem !important;
+  }
+
+  /* Utilities for hiding elements on mobile/desktop */
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* Scrollbar hiding for horizontal scrolls */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
