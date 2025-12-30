@@ -274,7 +274,16 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
                 {displayMedia.length > 0 && (
                     <div className="carousel-container" style={{ position: 'relative' }}>
-                        <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
+                        <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll} style={{
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            overflowX: 'auto',
+                            scrollSnapType: 'x mandatory',
+                            gap: '0',
+                            width: '100%',
+                            borderRadius: '4px',
+                            scrollbarWidth: 'none',
+                        }}>
                             {displayMedia.map((mediaItem, idx) => {
                                 // Calculate which "Real Index" (0..N-1) this item represents
                                 let itemRealIndex = idx;
