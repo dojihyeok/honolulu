@@ -12,39 +12,37 @@ interface TimelineProps {
 // ---------------------------------------------------------------------------
 // VideoItem Component: Handles safe video playback & mute state
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// VideoItem Component: Handles safe video playback & mute state
+// ---------------------------------------------------------------------------
 interface VideoItemProps {
     src: string;
     isActive: boolean;  // Is this specific slide currently active/centered?
-    isVisible: boolean; // Is the parent card currently visible in viewport?
     isMuted: boolean;
     onToggleMute: () => void;
 }
 
-const VideoItem = ({ src, isActive, isVisible, isMuted, onToggleMute }: VideoItemProps) => {
+const VideoItem = ({ src, isActive, isMuted, onToggleMute }: VideoItemProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const { elementRef, isVisible } = useIntersectionObserver({ threshold: 0.5, triggerOnce: false });
 
-    // Effect to safely handle play/pause based on props
-    // This avoids the "play() failed because the user didn't interact" error spam locally
-    // And prevents the "ref callback" crash on rapid state updates
+    // Effect to safely handle play/pause based on visibility and active state
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
 
-        // If card is visible and this slide is active, try to play
+        // Play if:
+        // 1. The video element is visible in viewport (>50%)
+        // 2. It is the active slide in the carousel
         if (isVisible && isActive) {
-            // Mute state must be set before play for autoplay policies
             video.muted = isMuted;
-
             const playPromise = video.play();
             if (playPromise !== undefined) {
-                playPromise.catch((error) => {
-                    // Autoplay was prevented or suppressed.
-                    // This is expected in many browsers if not muted.
-                    // console.warn("Autoplay prevent:", error);
+                playPromise.catch(() => {
+                    // Autoplay prevented
                 });
             }
         } else {
-            // Otherwise pause to save resources
             video.pause();
         }
     }, [isVisible, isActive, isMuted]);
@@ -58,6 +56,7 @@ const VideoItem = ({ src, isActive, isVisible, isMuted, onToggleMute }: VideoIte
 
     return (
         <div
+            ref={elementRef}
             className="video-thumbnail"
             onClick={(e) => {
                 e.stopPropagation();
@@ -70,8 +69,8 @@ const VideoItem = ({ src, isActive, isVisible, isMuted, onToggleMute }: VideoIte
                 src={src}
                 playsInline
                 loop
-                muted={isMuted} // React prop for initial render
-                preload="metadata"
+                muted={isMuted}
+                preload="none" // Aggressive optimization: Defer loading until play() is called
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
             <div className="mute-indicator">
@@ -85,7 +84,9 @@ const VideoItem = ({ src, isActive, isVisible, isMuted, onToggleMute }: VideoIte
 // TimelineItemView Component
 // ---------------------------------------------------------------------------
 const TimelineItemView = ({ item }: { item: TimelineItem }) => {
-    const { elementRef, isVisible } = useIntersectionObserver({ triggerOnce: false });
+    // TRIGGER ONCE: TRUE -> Keeps the component mounted after first load
+    // This prevents "Layout Thrashing" and scroll stutter on mobile
+    const { elementRef, isVisible } = useIntersectionObserver({ triggerOnce: true, threshold: 0.1 });
     const [scrollIndex, setScrollIndex] = useState(0);
     // Key: index, Value: isMuted boolean (default true if undefined)
     const [mutedStates, setMutedStates] = useState<Record<number, boolean>>({});
@@ -136,95 +137,97 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     return (
         <div
             ref={elementRef}
-            className={isVisible ? 'fade-in-up' : ''}
-            style={{ marginBottom: '4rem', position: 'relative' }}
+            className={isVisible ? 'fade-in-up' : 'opacity-0'} // Use opacity class instead of conditional render
+            style={{ marginBottom: '4rem', position: 'relative', minHeight: '200px', contentVisibility: 'auto', containIntrinsicSize: '500px' }}
         >
-            {/* Content Card */}
-            <div className="timeline-card">
-                <div className="timeline-header">
-                    <span className="timeline-date">
-                        {item.date} • {item.time}
-                    </span>
-                    {item.region && (
-                        <span className="region-badge">
-                            📍 {item.region}
+            {/* Content Card - Always rendered if isVisible is true (which sticks) */}
+            {isVisible && (
+                <div className="timeline-card">
+                    <div className="timeline-header">
+                        <span className="timeline-date">
+                            {item.date} • {item.time}
                         </span>
-                    )}
-                </div>
-
-                <div className="timeline-title-row">
-                    <h3 className="timeline-title">{item.title}</h3>
-                </div>
-
-                <p className="timeline-desc">
-                    {item.description}
-                </p>
-
-                {/* Enhanced Image/Video Layout - Lazy Loaded */}
-                {isVisible && item.media && item.media.length > 0 && (
-                    <div className="carousel-container" style={{ position: 'relative' }}>
-                        <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
-                            {item.media.map((mediaItem, idx) => (
-                                <div
-                                    key={idx}
-                                    className="image-wrapper"
-                                >
-                                    {mediaItem.type === 'video' ? (
-                                        <VideoItem
-                                            src={mediaItem.src}
-                                            isActive={idx === scrollIndex}
-                                            isVisible={isVisible}
-                                            isMuted={mutedStates[idx] ?? true}
-                                            onToggleMute={() => toggleMute(idx)}
-                                        />
-                                    ) : (
-                                        <Image
-                                            src={mediaItem.src}
-                                            alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, 800px"
-                                            quality={50}
-                                            style={{ objectFit: 'cover' }}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Navigation Arrows */}
-                        {item.media.length > 1 && (
-                            <>
-                                <button
-                                    className="nav-btn prev visible"
-                                    onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
-                                    aria-label="Previous photo"
-                                >
-                                    &#10094;
-                                </button>
-                                <button
-                                    className="nav-btn next visible"
-                                    onClick={(e) => { e.stopPropagation(); scrollNext(); }}
-                                    aria-label="Next photo"
-                                >
-                                    &#10095;
-                                </button>
-                            </>
-                        )}
-
-                        {/* Mobile Pagination Dots */}
-                        {item.media.length > 1 && (
-                            <div className="mobile-dots">
-                                {item.media.map((_, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`dot ${idx === scrollIndex ? 'active' : ''}`}
-                                    />
-                                ))}
-                            </div>
+                        {item.region && (
+                            <span className="region-badge">
+                                📍 {item.region}
+                            </span>
                         )}
                     </div>
-                )}
-            </div>
+
+                    <div className="timeline-title-row">
+                        <h3 className="timeline-title">{item.title}</h3>
+                    </div>
+
+                    <p className="timeline-desc">
+                        {item.description}
+                    </p>
+
+                    {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
+                    {item.media && item.media.length > 0 && (
+                        <div className="carousel-container" style={{ position: 'relative' }}>
+                            <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
+                                {item.media.map((mediaItem, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="image-wrapper"
+                                    >
+                                        {mediaItem.type === 'video' ? (
+                                            <VideoItem
+                                                src={mediaItem.src}
+                                                isActive={idx === scrollIndex}
+                                                isMuted={mutedStates[idx] ?? true}
+                                                onToggleMute={() => toggleMute(idx)}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={mediaItem.src}
+                                                alt={mediaItem.alt || `Trip photo ${idx + 1}`}
+                                                fill
+                                                sizes="(max-width: 480px) 100vw, (max-width: 768px) 80vw, 800px" // Optimized for mobile
+                                                quality={25} // Aggressive compression
+                                                style={{ objectFit: 'cover' }}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Navigation Arrows */}
+                            {item.media.length > 1 && (
+                                <>
+                                    <button
+                                        className="nav-btn prev visible"
+                                        onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
+                                        aria-label="Previous photo"
+                                    >
+                                        &#10094;
+                                    </button>
+                                    <button
+                                        className="nav-btn next visible"
+                                        onClick={(e) => { e.stopPropagation(); scrollNext(); }}
+                                        aria-label="Next photo"
+                                    >
+                                        &#10095;
+                                    </button>
+                                </>
+                            )}
+
+                            {/* Mobile Pagination Dots */}
+                            {item.media.length > 1 && (
+                                <div className="mobile-dots">
+                                    {item.media.map((_, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`dot ${idx === scrollIndex ? 'active' : ''}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+
 
             <style jsx>{`
                 .timeline-card {
