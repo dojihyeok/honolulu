@@ -235,6 +235,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
     return (
         <div
+            ref={elementRef}
             className="timeline-item-view"
             style={{
                 marginBottom: '4rem',
