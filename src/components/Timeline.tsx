@@ -235,17 +235,15 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
     return (
         <div
-            ref={elementRef}
-            className={isVisible ? 'fade-in-up' : ''}
+            className="timeline-item-view"
             style={{
                 marginBottom: '4rem',
                 position: 'relative',
                 minHeight: '200px',
-                opacity: isVisible ? undefined : 0,
                 containIntrinsicSize: '500px'
             }}
         >
-            {/* Content Card - Always rendered to ensure layout stability */}
+            {/* Content Card - Always rendered and visible */}
             <div className="timeline-card">
                 <div className="timeline-header">
                     <span className="timeline-date">
