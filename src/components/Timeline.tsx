@@ -236,105 +236,110 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     return (
         <div
             ref={elementRef}
-            className={isVisible ? 'fade-in-up' : 'opacity-0'} // Use opacity class instead of conditional render
-            style={{ marginBottom: '4rem', position: 'relative', minHeight: '200px', contentVisibility: 'auto', containIntrinsicSize: '500px' }}
+            className={isVisible ? 'fade-in-up' : ''}
+            style={{
+                marginBottom: '4rem',
+                position: 'relative',
+                minHeight: '200px',
+                opacity: isVisible ? undefined : 0,
+                containIntrinsicSize: '500px'
+            }}
         >
-            {/* Content Card - Always rendered if isVisible is true (which sticks) */}
-            {isVisible && (
-                <div className="timeline-card">
-                    <div className="timeline-header">
-                        <span className="timeline-date">
-                            {item.date} • {item.time}
+            {/* Content Card - Always rendered to ensure layout stability */}
+            <div className="timeline-card">
+                <div className="timeline-header">
+                    <span className="timeline-date">
+                        {item.date} • {item.time}
+                    </span>
+                    {item.region && (
+                        <span className="region-badge">
+                            📍 {item.region}
                         </span>
-                        {item.region && (
-                            <span className="region-badge">
-                                📍 {item.region}
-                            </span>
-                        )}
-                    </div>
-
-                    <div className="timeline-title-row">
-                        <h3 className="timeline-title">{item.title}</h3>
-                    </div>
-
-                    <p className="timeline-desc">
-                        {item.description}
-                    </p>
-
-                    {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
-                    {displayMedia.length > 0 && (
-                        <div className="carousel-container" style={{ position: 'relative' }}>
-                            <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
-                                {displayMedia.map((mediaItem, idx) => {
-                                    // Calculate which "Real Index" (0..N-1) this item represents
-                                    let itemRealIndex = idx;
-                                    if (isInfinite) {
-                                        if (idx === 0) itemRealIndex = itemCount - 1; // Clone of Last
-                                        else if (idx === itemCount + 1) itemRealIndex = 0; // Clone of First
-                                        else itemRealIndex = idx - 1; // Real items shifted by 1
-                                    }
-
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className="image-wrapper"
-                                        >
-                                            {mediaItem.type === 'video' ? (
-                                                <VideoItem
-                                                    src={mediaItem.src}
-                                                    // Active if current scroll state matches this item's real content
-                                                    isActive={scrollIndex === itemRealIndex}
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src={mediaItem.src}
-                                                    alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, 800px"
-                                                    style={{ objectFit: 'cover' }}
-                                                    priority={idx === 0} // Prioritize first image
-                                                />
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Navigation Arrows */}
-                            {itemCount > 1 && (
-                                <>
-                                    <button
-                                        className="nav-btn prev visible"
-                                        onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
-                                        aria-label="Previous photo"
-                                    >
-                                        &#10094;
-                                    </button>
-                                    <button
-                                        className="nav-btn next visible"
-                                        onClick={(e) => { e.stopPropagation(); scrollNext(); }}
-                                        aria-label="Next photo"
-                                    >
-                                        &#10095;
-                                    </button>
-                                </>
-                            )}
-
-                            {/* Mobile Pagination Dots */}
-                            {itemCount > 1 && (
-                                <div className="mobile-dots">
-                                    {item.media?.map((_, idx) => (
-                                        <div
-                                            key={idx}
-                                            className={`dot ${idx === scrollIndex ? 'active' : ''}`}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                     )}
                 </div>
-            )}
+
+                <div className="timeline-title-row">
+                    <h3 className="timeline-title">{item.title}</h3>
+                </div>
+
+                <p className="timeline-desc">
+                    {item.description}
+                </p>
+
+                {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
+                {displayMedia.length > 0 && (
+                    <div className="carousel-container" style={{ position: 'relative' }}>
+                        <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll}>
+                            {displayMedia.map((mediaItem, idx) => {
+                                // Calculate which "Real Index" (0..N-1) this item represents
+                                let itemRealIndex = idx;
+                                if (isInfinite) {
+                                    if (idx === 0) itemRealIndex = itemCount - 1; // Clone of Last
+                                    else if (idx === itemCount + 1) itemRealIndex = 0; // Clone of First
+                                    else itemRealIndex = idx - 1; // Real items shifted by 1
+                                }
+
+                                return (
+                                    <div
+                                        key={idx}
+                                        className="image-wrapper"
+                                    >
+                                        {mediaItem.type === 'video' ? (
+                                            <VideoItem
+                                                src={mediaItem.src}
+                                                // Active if current scroll state matches this item's real content
+                                                isActive={scrollIndex === itemRealIndex}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={mediaItem.src}
+                                                alt={mediaItem.alt || `Trip photo ${idx + 1}`}
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, 800px"
+                                                style={{ objectFit: 'cover' }}
+                                                priority={idx === 0} // Prioritize first image
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Navigation Arrows */}
+                        {itemCount > 1 && (
+                            <>
+                                <button
+                                    className="nav-btn prev visible"
+                                    onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
+                                    aria-label="Previous photo"
+                                >
+                                    &#10094;
+                                </button>
+                                <button
+                                    className="nav-btn next visible"
+                                    onClick={(e) => { e.stopPropagation(); scrollNext(); }}
+                                    aria-label="Next photo"
+                                >
+                                    &#10095;
+                                </button>
+                            </>
+                        )}
+
+                        {/* Mobile Pagination Dots */}
+                        {itemCount > 1 && (
+                            <div className="mobile-dots">
+                                {item.media?.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`dot ${idx === scrollIndex ? 'active' : ''}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
 
 
             <style jsx>{`
@@ -521,7 +526,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     }
                 }
             `}</style>
-        </div>
+        </div >
     );
 };
 
