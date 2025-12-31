@@ -513,37 +513,37 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .mobile-dots {
                     display: flex;
                     position: absolute;
-                    bottom: 15px;
+                    bottom: 12px;
                     left: 50%;
                     transform: translateX(-50%);
-                    gap: 8px; /* Slightly wider gap */
-                    z-index: 20;
+                    gap: 10px;
+                    z-index: 50; /* Higher Z-index */
                     pointer-events: none;
-                    background: rgba(0, 0, 0, 0.2); /* Subtle backing for contrast */
-                    padding: 6px 10px;
+                    background: rgba(0, 0, 0, 0.5); /* Darker background */
+                    padding: 8px 12px;
                     border-radius: 20px;
-                    backdrop-filter: blur(2px);
                 }
                 
                 .dot {
-                    width: 7px; /* Slightly larger */
-                    height: 7px;
+                    width: 8px; 
+                    height: 8px;
                     border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.5);
-                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Stronger shadow */
+                    background: rgba(255, 255, 255, 0.4); 
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    transition: all 0.2s;
                 }
                 
                 .dot.active {
                     background: #fff;
-                    transform: scale(1.3);
-                    box-shadow: 0 0 4px rgba(0,0,0,0.8);
+                    transform: scale(1.2);
+                    box-shadow: 0 0 6px rgba(0,0,0,0.5);
+                    border: none;
                 }
 
                 @media (max-width: 768px) {
                     .image-wrapper {
                         height: auto !important;
-                        aspect-ratio: 3 / 4; /* Portrait 4:3 */
+                        aspect-ratio: 4 / 3; /* Landscape 4:3 */
                     }
                     .timeline-card {
                         border-radius: 0; 
