@@ -641,7 +641,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     }
                     .image-wrapper {
                         height: auto !important;
-                        aspect-ratio: 3 / 4; /* Portrait 3:4 (Vertical Rectangle) */
+                        aspect-ratio: 3 / 4; /* Portrait 3:4 (Vertical Rectangle) [v2-force] */
                         width: 100vw !important; /* Force full viewport width */
                     }
                     .image-wrapper img {
