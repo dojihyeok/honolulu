@@ -323,7 +323,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                                 alt={mediaItem.alt || `Trip photo ${idx + 1}`}
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, 800px"
-                                                style={{ objectFit: 'contain' }}
+                                                style={{ objectFit: 'cover' }}
                                                 priority={idx === 0} // Prioritize first image
                                             />
                                         )}
@@ -628,31 +628,39 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 }
 
                 @media (max-width: 768px) {
+                    .timeline-container {
+                        padding: 0 !important; /* Full bleed, no padding */
+                        width: 100vw;
+                        max-width: 100vw;
+                        overflow-x: hidden; /* Prevent horizontal scroll */
+                    }
+                    /* Add padding back to title since container lost it */
+                    .timeline-container :global(h2) {
+                        padding: 2rem 1rem 1rem 1rem;
+                        font-size: 1.5rem !important; /* Slightly smaller for mobile */
+                    }
                     .image-wrapper {
                         height: auto !important;
-                        aspect-ratio: 4 / 3; /* Landscape 4:3 */
+                        aspect-ratio: 3 / 4; /* Portrait 3:4 for immersive vertical feel */
+                        width: 100vw !important; /* Force full viewport width */
                     }
                     .timeline-card {
                         border-radius: 0; 
                         box-shadow: none;
-                        border-left: none;
-                        border-right: none;
-                        border-top: none; /* Ensure no top border */
-                        border-bottom: 1px solid var(--border); /* Optional separator */
+                        border: none; /* completely remove border for clean look */
+                        margin-bottom: 2rem; /* Add space between episodes */
                     }
                     .timeline-title {
-                        font-size: 1.75rem;
+                        font-size: 1.5rem;
                         word-break: keep-all;
-                        padding: 0 1rem; /* Ensure title has padding */
+                        padding: 0 1rem;
+                        margin-bottom: 0.5rem;
+                    }
+                    .timeline-header {
+                        padding: 1rem 1rem 0.5rem 1rem; /* tighter padding */
                     }
                     .timeline-desc {
                         display: none;
-                    }
-                    /* Ensure full width for container */
-                    .timeline-container {
-                         width: 100vw;
-                         max-width: 100vw;
-                         padding: 2rem 0 !important;
                     }
                 }
             `}</style>
