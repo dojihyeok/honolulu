@@ -351,6 +351,9 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             </>
                         )}
 
+                        {/* Gradient Overlay for visibility */}
+                        <div className="gradient-overlay" />
+
                         {/* Mobile Pagination Dots */}
                         {itemCount > 1 && (
                             <div className="mobile-dots">
@@ -510,18 +513,30 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .prev { left: 10px; }
                 .next { right: 10px; }
 
+                .gradient-overlay {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 80px;
+                    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+                    z-index: 40;
+                    pointer-events: none;
+                }
+
                 .mobile-dots {
                     display: flex;
                     position: absolute;
-                    bottom: 12px;
+                    bottom: 16px;
                     left: 50%;
                     transform: translateX(-50%);
                     gap: 10px;
-                    z-index: 50; /* Higher Z-index */
+                    z-index: 100; /* Max Z-index */
                     pointer-events: none;
-                    background: rgba(0, 0, 0, 0.5); /* Darker background */
+                    background: rgba(0, 0, 0, 0.3); /* Lighter bg as we have gradient */
                     padding: 8px 12px;
                     border-radius: 20px;
+                    backdrop-filter: blur(2px);
                 }
                 
                 .dot {
