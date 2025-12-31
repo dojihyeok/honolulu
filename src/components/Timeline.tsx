@@ -351,10 +351,15 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             </>
                         )}
 
-                        {/* Mobile Pagination Badge (Premium Style) */}
+                        {/* Mobile Pagination Dots */}
                         {itemCount > 1 && (
-                            <div className="page-indicator">
-                                {scrollIndex + 1} / {item.media?.length}
+                            <div className="mobile-dots">
+                                {item.media?.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`dot ${idx === scrollIndex ? 'active' : ''}`}
+                                    />
+                                ))}
                             </div>
                         )}
                     </div>
@@ -505,20 +510,34 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .prev { left: 10px; }
                 .next { right: 10px; }
 
-                .page-indicator {
+                .mobile-dots {
+                    display: flex;
                     position: absolute;
-                    top: 15px;
-                    right: 15px;
-                    background: rgba(0, 0, 0, 0.6);
-                    color: white;
-                    padding: 4px 12px;
-                    border-radius: 20px;
-                    font-size: 0.85rem;
-                    font-weight: 500;
-                    backdrop-filter: blur(4px);
+                    bottom: 15px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    gap: 8px; /* Slightly wider gap */
                     z-index: 20;
                     pointer-events: none;
-                    letter-spacing: 0.5px;
+                    background: rgba(0, 0, 0, 0.2); /* Subtle backing for contrast */
+                    padding: 6px 10px;
+                    border-radius: 20px;
+                    backdrop-filter: blur(2px);
+                }
+                
+                .dot {
+                    width: 7px; /* Slightly larger */
+                    height: 7px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.5);
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Stronger shadow */
+                }
+                
+                .dot.active {
+                    background: #fff;
+                    transform: scale(1.3);
+                    box-shadow: 0 0 4px rgba(0,0,0,0.8);
                 }
 
                 @media (max-width: 768px) {
