@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Timeline from '@/components/Timeline';
+import TimelineV2 from '@/components/TimelineV2';
 import { REAL_TIMELINE } from '@/data/real';
 // Map removed as per user request
 
@@ -10,7 +10,7 @@ export default function TravelJournal() {
     <div className="journal-container relative">
       {/* Timeline Section */}
       <div className="timeline-section">
-        <Timeline
+        <TimelineV2
           items={REAL_TIMELINE}
         />
       </div>
