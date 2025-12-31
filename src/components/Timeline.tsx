@@ -223,17 +223,18 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
     const scrollPrev = () => {
         if (scrollContainerRef.current) {
-            const { clientWidth } = scrollContainerRef.current;
-            // Just scroll left. If we hit Index 0 (Clone), handleScroll will reset us to Index N.
-            scrollContainerRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' });
+            const { clientWidth, scrollLeft } = scrollContainerRef.current;
+            const target = Math.max(scrollLeft - clientWidth, 0);
+            scrollContainerRef.current.scrollTo({ left: target, behavior: 'auto' });
         }
     };
 
     const scrollNext = () => {
         if (scrollContainerRef.current) {
-            const { clientWidth } = scrollContainerRef.current;
-            // Just scroll right. If we hit Index N+1 (Clone), handleScroll will reset us to Index 1.
-            scrollContainerRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' });
+            const { clientWidth, scrollLeft, scrollWidth } = scrollContainerRef.current;
+            const maxScroll = scrollWidth - clientWidth;
+            const target = Math.min(scrollLeft + clientWidth, maxScroll);
+            scrollContainerRef.current.scrollTo({ left: target, behavior: 'auto' });
         }
     };
 
