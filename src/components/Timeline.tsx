@@ -641,11 +641,11 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     }
                     .image-wrapper {
                         height: auto !important;
-                        aspect-ratio: 4 / 3; /* Landscape 4:3 */
-                        background: #000; /* Black background for letterboxing */
+                        aspect-ratio: 3 / 4; /* Portrait 3:4 */
+                        width: 100vw !important; /* Force full viewport width */
                     }
                     .image-wrapper img {
-                        object-fit: contain !important; /* Ensure full image is visible */
+                        object-fit: cover !important; /* Cover to fill the 3:4 frame */
                     }
                     .timeline-card {
                         border-radius: 0; 
