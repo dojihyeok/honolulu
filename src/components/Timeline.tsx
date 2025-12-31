@@ -301,7 +301,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                 return (
                                     <div
                                         key={idx}
-                                        className="image-wrapper image-wrapper-mobile-v7"
+                                        className="image-wrapper image-wrapper-mobile-v8"
                                         style={{
                                             position: 'relative',
                                             height: '500px',
@@ -639,13 +639,13 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                         padding: 2rem 1rem 1rem 1rem;
                         font-size: 1.5rem !important; /* Slightly smaller for mobile */
                     }
-                    .image-wrapper, .image-wrapper-mobile-v7 {
+                    .image-wrapper, .image-wrapper-mobile-v8 {
                         height: auto !important;
-                        aspect-ratio: 4 / 3 !important; /* Landscape 4:3 (Width 4, Height 3) [v7-confirmed] */
+                        aspect-ratio: 3 / 4 !important; /* Portrait 3:4 (Vertical Rectangle) [v8-revert-to-tall] */
                         width: 100vw !important; /* Force full viewport width */
                     }
-                    .image-wrapper img, .image-wrapper-mobile-v7 img {
-                        object-fit: cover !important; /* Cover to fill the horizontal frame */
+                    .image-wrapper img, .image-wrapper-mobile-v8 img {
+                        object-fit: cover !important; /* Cover to fill the vertical frame */
                     }
                     .timeline-card {
                         border-radius: 0; 
