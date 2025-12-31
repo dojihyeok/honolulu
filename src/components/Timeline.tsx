@@ -596,6 +596,53 @@ export default function Timeline({ items }: TimelineProps) {
             </h2>
 
             <div style={{ position: 'relative', border: '1px solid transparent' }}>
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                    .gradient-overlay {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 80px;
+                        background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+                        z-index: 40;
+                        pointer-events: none;
+                        display: block !important;
+                        content: '';
+                    }
+                    .mobile-dots {
+                        display: flex !important;
+                        position: absolute;
+                        bottom: 16px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        gap: 10px;
+                        z-index: 100;
+                        pointer-events: none;
+                        background: rgba(0, 0, 0, 0.3);
+                        padding: 8px 12px;
+                        border-radius: 20px;
+                        backdrop-filter: blur(2px);
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        height: auto !important;
+                    }
+                    .dot {
+                        width: 8px !important;
+                        height: 8px !important;
+                        border-radius: 50% !important;
+                        background: rgba(255, 255, 255, 0.4);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        transition: all 0.2s;
+                        display: block !important;
+                    }
+                    .dot.active {
+                        background: #fff !important;
+                        transform: scale(1.2);
+                        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+                        border: none;
+                    }
+                `}} />
                 {items.length === 0 && (
                     <div style={{ padding: '2rem', textAlign: 'center', fontSize: '1.5rem', color: 'red' }}>
                         데이터가 없습니다 (0 items)
