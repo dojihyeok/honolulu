@@ -48,34 +48,6 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-def deploy():
-    # Hardcoded app dir based on previous success
-    app_dir = "/root/honolulu"
-    
-    print(f"Targeting App Dir: {app_dir}")
-    
-    commands = [
-        f"cd {app_dir} && git fetch origin",
-        f"cd {app_dir} && git reset --hard origin/main", # Force switch to main and overwrite local changes
-        # Force kill any process on port 3006 (Zombie process cleanup)
-        f"fuser -k 3006/tcp || true", 
-        f"lsof -t -i:3006 | xargs kill -9 || true",
-        f"cd {app_dir} && pm2 delete {APP_NAME} || true", # Stop and remove existing process
-        f"cd {app_dir} && rm -rf node_modules .next", # Full clean
-        f"cd {app_dir} && npm install --legacy-peer-deps",
-        f"cd {app_dir} && npm run build",
-        f"cd {app_dir} && pm2 start npm --name '{APP_NAME}' -- start"
-    ]
-    
-    for cmd in commands:
-        print(f"\n--- Running: {cmd} ---")
-        out = run_ssh_command(cmd)
-        print(out)
-        if "error" in out.lower() and "npm ERR!" in out:
-             print("Potential Error detected in output. Stopping.")
-             return
-
-    print("\n--- Force Deployment Complete ---")
-
 if __name__ == "__main__":
-    deploy()
+    # Fetch logs
+    print(run_ssh_command(f"pm2 logs {APP_NAME} --lines 100 --nostream"))

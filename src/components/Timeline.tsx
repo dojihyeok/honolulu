@@ -338,25 +338,25 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                 <button
                                     onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
                                     aria-label="Previous photo"
+                                    className="nav-btn prev"
                                     style={{
                                         position: 'absolute',
-                                        top: '50%',
                                         left: '10px',
+                                        top: '50%',
                                         transform: 'translateY(-50%)',
-                                        background: 'rgba(255, 255, 255, 0.8)',
+                                        zIndex: 15,
+                                        opacity: 1, // Always visible
                                         border: 'none',
+                                        background: 'rgba(255, 255, 255, 0.8)',
                                         borderRadius: '50%',
                                         width: '30px',
                                         height: '30px',
-                                        fontSize: '1.2rem',
-                                        color: '#333',
                                         cursor: 'pointer',
-                                        zIndex: 50,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                                        opacity: 1 // Always visible on mobile
+                                        color: '#333',
+                                        fontSize: '1.2rem'
                                     }}
                                 >
                                     &#10094;
@@ -364,25 +364,25 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                 <button
                                     onClick={(e) => { e.stopPropagation(); scrollNext(); }}
                                     aria-label="Next photo"
+                                    className="nav-btn next"
                                     style={{
                                         position: 'absolute',
-                                        top: '50%',
                                         right: '10px',
+                                        top: '50%',
                                         transform: 'translateY(-50%)',
-                                        background: 'rgba(255, 255, 255, 0.8)',
+                                        zIndex: 15,
+                                        opacity: 1, // Always visible
                                         border: 'none',
+                                        background: 'rgba(255, 255, 255, 0.8)',
                                         borderRadius: '50%',
                                         width: '30px',
                                         height: '30px',
-                                        fontSize: '1.2rem',
-                                        color: '#333',
                                         cursor: 'pointer',
-                                        zIndex: 50,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                                        opacity: 1 // Always visible on mobile
+                                        color: '#333',
+                                        fontSize: '1.2rem'
                                     }}
                                 >
                                     &#10095;
@@ -574,7 +574,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
                 }
                 
-                .carousel-container:hover .nav-btn.visible {
+                .carousel-container:hover .nav-btn {
                     opacity: 1;
                 }
 
