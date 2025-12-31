@@ -331,20 +331,58 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                             })}
                         </div>
 
-                        {/* Navigation Arrows */}
+                        {/* Navigation Arrows - Force visibility and styling inline */}
                         {itemCount > 1 && (
                             <>
                                 <button
-                                    className="nav-btn prev visible"
                                     onClick={(e) => { e.stopPropagation(); scrollPrev(); }}
                                     aria-label="Previous photo"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '10px',
+                                        transform: 'translateY(-50%)',
+                                        background: 'rgba(255, 255, 255, 0.8)',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '30px',
+                                        height: '30px',
+                                        fontSize: '1.2rem',
+                                        color: '#333',
+                                        cursor: 'pointer',
+                                        zIndex: 50,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                        opacity: 1 // Always visible on mobile
+                                    }}
                                 >
                                     &#10094;
                                 </button>
                                 <button
-                                    className="nav-btn next visible"
                                     onClick={(e) => { e.stopPropagation(); scrollNext(); }}
                                     aria-label="Next photo"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        right: '10px',
+                                        transform: 'translateY(-50%)',
+                                        background: 'rgba(255, 255, 255, 0.8)',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '30px',
+                                        height: '30px',
+                                        fontSize: '1.2rem',
+                                        color: '#333',
+                                        cursor: 'pointer',
+                                        zIndex: 50,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                        opacity: 1 // Always visible on mobile
+                                    }}
                                 >
                                     &#10095;
                                 </button>
@@ -352,15 +390,48 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                         )}
 
                         {/* Gradient Overlay for visibility */}
-                        <div className="gradient-overlay" />
+                        <div style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '80px',
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
+                            zIndex: 40,
+                            pointerEvents: 'none'
+                        }} />
 
-                        {/* Mobile Pagination Dots */}
+                        {/* Mobile Pagination Dots - Inline Styles */}
                         {itemCount > 1 && (
-                            <div className="mobile-dots">
+                            <div style={{
+                                display: 'flex',
+                                position: 'absolute',
+                                bottom: '16px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                gap: '10px',
+                                zIndex: 100,
+                                pointerEvents: 'none',
+                                background: 'rgba(0, 0, 0, 0.3)',
+                                padding: '8px 12px',
+                                borderRadius: '20px',
+                                backdropFilter: 'blur(2px)',
+                                width: 'fit-content' // Ensure it doesn't collapse
+                            }}>
                                 {item.media?.map((_, idx) => (
                                     <div
                                         key={idx}
-                                        className={`dot ${idx === scrollIndex ? 'active' : ''}`}
+                                        style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            borderRadius: '50%',
+                                            background: idx === scrollIndex ? '#fff' : 'rgba(255, 255, 255, 0.4)',
+                                            border: idx === scrollIndex ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
+                                            transform: idx === scrollIndex ? 'scale(1.2)' : 'scale(1)',
+                                            boxShadow: idx === scrollIndex ? '0 0 6px rgba(0,0,0,0.5)' : 'none',
+                                            transition: 'all 0.2s',
+                                            display: 'block' // Force block
+                                        }}
                                     />
                                 ))}
                             </div>
