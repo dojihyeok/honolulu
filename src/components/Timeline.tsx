@@ -599,16 +599,16 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .mobile-dots {
                     display: flex;
                     position: absolute;
-                    bottom: 16px;
+                    bottom: 8px; /* Move closer to bottom */
                     left: 50%;
                     transform: translateX(-50%);
-                    gap: 10px;
+                    gap: 8px;
                     z-index: 100; /* Max Z-index */
                     pointer-events: none;
-                    background: rgba(0, 0, 0, 0.3); /* Lighter bg as we have gradient */
-                    padding: 8px 12px;
-                    border-radius: 20px;
-                    backdrop-filter: blur(2px);
+                    background: transparent; /* Transparent background */
+                    padding: 0; /* Remove padding */
+                    border-radius: 0;
+                    backdrop-filter: none; /* Remove blur */
                 }
                 
                 .dot {
