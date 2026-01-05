@@ -31,7 +31,7 @@ export default function RootLayout({
           pointerEvents: 'none',
           fontFamily: 'monospace'
         }}>
-          v0.23
+          v0.26
         </div>
       </body>
     </html>

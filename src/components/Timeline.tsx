@@ -24,16 +24,17 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMuted, setIsMuted] = useState(true);
 
-    // 1. Smart Preload Observer (Loads when close)
+    // 1. Smart Preload Observer (Loads when close but not too aggressively)
     const { elementRef: preloadRef, isVisible: isClose } = useIntersectionObserver({
         threshold: 0,
-        rootMargin: '600px 0px 600px 0px'
+        rootMargin: '800px 0px 800px 0px' // Reduced from 1200px to focus bandwidth on nearer content
     });
 
-    // 2. Playback Observer (Plays when visible)
+    // 2. Playback Observer (Plays when 40% visible)
     const { elementRef: playbackRef, isVisible: isPlayingVisible } = useIntersectionObserver({
-        threshold: 0.5,
-        triggerOnce: false
+        threshold: 0.4, // Playing starts earlier
+        triggerOnce: false,
+        rootMargin: '0px'
     });
 
     // Merge refs to attach both observers to the same element
@@ -172,7 +173,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     const { elementRef, isVisible } = useIntersectionObserver({
         triggerOnce: true,
         threshold: 0,
-        rootMargin: '500px 0px 500px 0px' // Reduced from 1000px to save memory on mobile
+        rootMargin: '2000px 0px 2000px 0px' // Load images very early (2000px range) as they are lightweight
     });
     const [scrollIndex, setScrollIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -358,8 +359,9 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                                         src={mediaItem.src}
                                                         alt={mediaItem.alt || `Trip photo ${idx + 1}`}
                                                         fill
-                                                        quality={65} // Reduced quality for performance
-                                                        sizes="(max-width: 768px) 640px, 800px" // Capp resolution at 640px for mobile speed
+                                                        quality={75}
+                                                        sizes="100vw"
+                                                        unoptimized // Serve original file directly (faster if files are small)
                                                         style={{
                                                             objectFit: currentFit,
                                                             transition: 'object-fit 0.3s, transform 0.3s',
