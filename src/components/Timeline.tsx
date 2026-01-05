@@ -22,35 +22,53 @@ interface VideoItemProps {
 
 const VideoItem = ({ src, isActive }: VideoItemProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { elementRef, isVisible } = useIntersectionObserver({ threshold: 0.5, triggerOnce: false });
-    const [isMuted, setIsMuted] = useState(true); // Default to muted for autoplay support
+    const [isMuted, setIsMuted] = useState(true);
+
+    // 1. Smart Preload Observer (Loads when close)
+    const { elementRef: preloadRef, isVisible: isClose } = useIntersectionObserver({
+        threshold: 0,
+        rootMargin: '600px 0px 600px 0px'
+    });
+
+    // 2. Playback Observer (Plays when visible)
+    const { elementRef: playbackRef, isVisible: isPlayingVisible } = useIntersectionObserver({
+        threshold: 0.5,
+        triggerOnce: false
+    });
+
+    // Merge refs to attach both observers to the same element
+    const setRefs = (node: HTMLDivElement | null) => {
+        // Fix: useIntersectionObserver returns a RefObject, not a callback ref.
+        // We must assign to .current, NOT call it as a function.
+        if (playbackRef && 'current' in playbackRef) {
+            // @ts-ignore
+            playbackRef.current = node;
+        }
+        if (preloadRef && 'current' in preloadRef) {
+            // @ts-ignore
+            preloadRef.current = node;
+        }
+    };
 
     // Effect to safely handle play/pause based on visibility and active state
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
 
-        // Play if:
-        // 1. The video element is visible in viewport (>50%)
-        // 2. It is the active slide in the carousel
-        if (isVisible && isActive) {
-            // video.muted = isMuted; // React prop handles this, but explicit sync can be safer
+        if (isPlayingVisible && isActive) {
             const playPromise = video.play();
             if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // Autoplay prevented (usually shouldn't happen if muted)
-                });
+                playPromise.catch(() => { });
             }
         } else {
             video.pause();
-            if (!isMuted) setIsMuted(true); // Reset to muted if it was playing sound
+            if (!isMuted) setIsMuted(true);
         }
 
-        // Cleanup function to ensure pause on unmount
         return () => {
             video.pause();
         };
-    }, [isVisible, isActive]);
+    }, [isPlayingVisible, isActive]);
 
     const toggleMute = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent carousel navigation
@@ -59,7 +77,7 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
 
     return (
         <div
-            ref={elementRef}
+            ref={setRefs}
             className="video-thumbnail"
             style={{
                 cursor: 'pointer',
@@ -77,16 +95,17 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
                 x5-playsinline="true"
                 loop
                 muted={isMuted}
-                preload="metadata" // Load metadata immediately for fast start
+                // Smart Preload: 'auto' when close, 'metadata' otherwise (or 'none' to save more data)
+                preload={isClose ? "auto" : "metadata"}
+                poster={src.replace('.mp4', '_poster.jpg')} // Instant start visual
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'contain', // Changed to contain to prevent cropping vertical videos
+                    objectFit: 'cover', // Changed to cover to ensure immersive 3:4 experience
                     objectPosition: 'center', // Ensure centered content
                     display: 'block'
                 }}
             >
-                <source src={src.replace('.mp4', '_mobile.mp4')} media="(max-width: 768px)" type="video/mp4" />
                 <source src={src} type="video/mp4" />
             </video>
 
@@ -150,10 +169,17 @@ const VideoItem = ({ src, isActive }: VideoItemProps) => {
 const TimelineItemView = ({ item }: { item: TimelineItem }) => {
     // TRIGGER ONCE: TRUE -> Keeps the component mounted after first load
     // This prevents "Layout Thrashing" and scroll stutter on mobile
-    const { elementRef, isVisible } = useIntersectionObserver({ triggerOnce: true, threshold: 0.1 });
+    const { elementRef, isVisible } = useIntersectionObserver({
+        triggerOnce: true,
+        threshold: 0,
+        rootMargin: '500px 0px 500px 0px' // Reduced from 1000px to save memory on mobile
+    });
     const [scrollIndex, setScrollIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+    const [imageFits, setImageFits] = useState<Record<number, "cover" | "contain">>(
+        {}
+    );
 
     // Infinite Loop: Clone last item to start AND first item to end for bidirectional loop
     const itemCount = item.media?.length || 0;
@@ -259,11 +285,11 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
             }}>
                 <div className="timeline-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 1.5rem 0.5rem 1.5rem' }}>
                     <span className="timeline-date">
-                        {item.date} • {item.time}
+                        {(item.media && item.media[scrollIndex] ? (item.media[scrollIndex].date || item.date) : item.date)} • {(item.media && item.media[scrollIndex] ? (item.media[scrollIndex].time || item.time) : item.time)}
                     </span>
-                    {item.region && (
+                    {(item.media && item.media[scrollIndex] && item.media[scrollIndex].region ? item.media[scrollIndex].region : item.region) && (
                         <span className="region-badge">
-                            📍 {item.region}
+                            📍 {(item.media && item.media[scrollIndex] && item.media[scrollIndex].region ? item.media[scrollIndex].region : item.region)}
                         </span>
                     )}
                 </div>
@@ -276,7 +302,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     {item.description}
                 </p>
 
-                {/* Enhanced Image/Video Layout - Always rendered once parent is visible */}
+                {/* Enhanced Image/Video Layout - Always render to prevent Layout Shift. Next.js Image handles lazy loading. */}
                 {displayMedia.length > 0 && (
                     <div className="carousel-container" style={{ position: 'relative' }}>
                         <div className="image-grid" ref={scrollContainerRef} onScroll={handleScroll} style={{
@@ -301,10 +327,10 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                 return (
                                     <div
                                         key={idx}
-                                        className="image-wrapper image-wrapper-mobile-v8"
+                                        className="image-wrapper image-wrapper-mobile-v14"
                                         style={{
                                             position: 'relative',
-                                            height: '500px',
+                                            // height is handled by CSS (500px desktop, 3:4 aspect ratio mobile)
                                             width: '100%',
                                             overflow: 'hidden',
                                             flex: '0 0 100%',
@@ -318,14 +344,43 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                                 isActive={scrollIndex === itemRealIndex}
                                             />
                                         ) : (
-                                            <Image
-                                                src={mediaItem.src}
-                                                alt={mediaItem.alt || `Trip photo ${idx + 1}`}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, 800px"
-                                                style={{ objectFit: 'cover' }}
-                                                priority={idx === 0} // Prioritize first image
-                                            />
+                                            (() => {
+                                                const hasMetadata = mediaItem.width && mediaItem.height;
+                                                const isWideMeta = hasMetadata ? (mediaItem.width! > mediaItem.height!) : false;
+
+                                                // If metadata exists, use it. Otherwise fall back to state (or 'contain' initially).
+                                                const currentFit = hasMetadata
+                                                    ? (isWideMeta ? 'cover' : 'contain')
+                                                    : (imageFits[idx] || 'contain');
+
+                                                return (
+                                                    <Image
+                                                        src={mediaItem.src}
+                                                        alt={mediaItem.alt || `Trip photo ${idx + 1}`}
+                                                        fill
+                                                        quality={65} // Reduced quality for performance
+                                                        sizes="(max-width: 768px) 640px, 800px" // Capp resolution at 640px for mobile speed
+                                                        style={{
+                                                            objectFit: currentFit,
+                                                            transition: 'object-fit 0.3s, transform 0.3s',
+                                                            // Apply specific transform to VERTICAL (contain) images
+                                                            // scale(1.4): Uniform 1.4x scaling, translateY(-8%): Top crop
+                                                            transform: currentFit === 'contain' ? 'scale(1.4) translateY(-8%)' : 'none',
+                                                            objectPosition: 'center',
+                                                            opacity: 1 // Ensure visible
+                                                        }}
+                                                        priority={idx === (isInfinite ? 1 : 0)}
+                                                        onLoad={(e) => {
+                                                            const img = e.target as HTMLImageElement;
+                                                            // Only update state if we didn't have metadata, to avoid re-renders
+                                                            if (!hasMetadata) {
+                                                                const isWide = img.naturalWidth > img.naturalHeight;
+                                                                setImageFits(prev => ({ ...prev, [idx]: isWide ? 'cover' : 'contain' }));
+                                                            }
+                                                        }}
+                                                    />
+                                                );
+                                            })()
                                         )}
                                     </div>
                                 );
@@ -413,10 +468,10 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                                 gap: '10px',
                                 zIndex: 100,
                                 pointerEvents: 'none',
-                                background: 'rgba(0, 0, 0, 0.3)',
-                                padding: '8px 12px',
-                                borderRadius: '20px',
-                                backdropFilter: 'blur(2px)',
+                                background: 'transparent',
+                                padding: '0',
+                                borderRadius: '0',
+                                backdropFilter: 'none',
                                 width: 'fit-content' // Ensure it doesn't collapse
                             }}>
                                 {item.media?.map((_, idx) => (
@@ -528,12 +583,15 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
 
                 .image-wrapper {
                     position: relative;
-                    height: 500px; /* Default Desktop Height */
+                    /* height: 500px;  Removed fixed height in favor of aspect ratio */
+                    aspect-ratio: 16 / 9; /* Default to 16/9 for desktop too for consistency unless overridden */
+                    width: 100%;
                     min-width: 100%;
                     flex: 0 0 100%;
                     cursor: pointer;
                     overflow: hidden;
                     scroll-snap-align: center;
+                    background-color: transparent; /* Transparent as requested */
                 }
 
                 .image-wrapper img {
@@ -548,6 +606,15 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     height: 100%;
                     position: relative;
                     background: black;
+                    overflow: hidden; /* Ensure no spillover */
+                }
+                .video-thumbnail video {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* Maintain cover for immersive feel */
+                    position: absolute;
+                    top: 0;
+                    left: 0;
                 }
                 
 
@@ -590,8 +657,8 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                     bottom: 0;
                     left: 0;
                     width: 100%;
-                    height: 80px;
-                    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+                    height: 50px; /* Reduced from 60px */
+                    background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%);
                     z-index: 40;
                     pointer-events: none;
                 }
@@ -599,7 +666,7 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                 .mobile-dots {
                     display: flex;
                     position: absolute;
-                    bottom: 8px; /* Move closer to bottom */
+                    bottom: 12px; /* Move closer to bottom edge */
                     left: 50%;
                     transform: translateX(-50%);
                     gap: 8px;
@@ -639,14 +706,49 @@ const TimelineItemView = ({ item }: { item: TimelineItem }) => {
                         padding: 2rem 1rem 1rem 1rem;
                         font-size: 1.5rem !important; /* Slightly smaller for mobile */
                     }
-                    .image-wrapper, .image-wrapper-mobile-v8 {
+                    /* Mobile Specific Overrides - High Specificity */
+                    div.image-wrapper.image-wrapper-mobile-v14 {
+                        width: 100vw !important;
+                        max-width: 100vw !important;
+                        flex: 0 0 100vw !important;
+                        
+                        aspect-ratio: 16 / 10.5 !important; /* Increase width relative to height (wider than 16/11) */
                         height: auto !important;
-                        aspect-ratio: 3 / 4 !important; /* Portrait 3:4 (Vertical Rectangle) [v8-revert-to-tall] */
-                        width: 100vw !important; /* Force full viewport width */
+                        min-height: auto !important;
+                        
+                        background-color: transparent !important;
+                        overflow: hidden;
+                        position: relative;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
-                    .image-wrapper img, .image-wrapper-mobile-v8 img {
-                        object-fit: cover !important; /* Cover to fill the vertical frame */
+                    .image-wrapper img, .image-wrapper-mobile-v14 img {
+                        /* object-fit handled inline via JS */
+                        position: absolute !important;
+                        top: 0;
+                        left: 0;
+                        width: 100% !important;
+                        height: 100% !important;
                     }
+                    /* Ensure video also covers the 3:4 area */
+                    /* Target video thumbnail specifically */
+                     div.image-wrapper.image-wrapper-mobile-v14 :global(.video-thumbnail) {
+                        position: absolute !important;
+                        top: 0;
+                        left: 0;
+                        width: 100% !important;
+                        height: 100% !important;
+                        z-index: 1;
+                    }
+                    div.image-wrapper.image-wrapper-mobile-v14 :global(video) {
+                         object-fit: cover !important;
+                         width: 100% !important;
+                         height: 100% !important;
+                         position: absolute !important;
+                         top: 0;
+                         left: 0;
+                    }
+
                     .timeline-card {
                         border-radius: 0; 
                         box-shadow: none;
@@ -696,16 +798,16 @@ export default function Timeline({ items }: TimelineProps) {
                     .mobile-dots {
                         display: flex !important;
                         position: absolute;
-                        bottom: 16px;
+                        bottom: 12px;
                         left: 50%;
                         transform: translateX(-50%);
                         gap: 10px;
                         z-index: 100;
                         pointer-events: none;
-                        background: rgba(0, 0, 0, 0.3);
-                        padding: 8px 12px;
-                        border-radius: 20px;
-                        backdrop-filter: blur(2px);
+                        background: transparent;
+                        padding: 0;
+                        border-radius: 0;
+                        backdrop-filter: none;
                         opacity: 1 !important;
                         visibility: visible !important;
                         height: auto !important;

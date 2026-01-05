@@ -14,7 +14,7 @@ REMOTE_DEST = '/root/honolulu/ecosystem.config.js'
 # Upload > Cleanup > Start
 CMD = """
 pm2 delete honolulu
-PID=$(lsof -t -i:3005)
+PID=$(lsof -t -i:3003)
 if [ -n "$PID" ]; then
     kill -9 $PID
 fi

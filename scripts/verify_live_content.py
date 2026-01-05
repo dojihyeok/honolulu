@@ -34,7 +34,12 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== VERIFYING LIVE CONTENT ON PORT 3003 ===")
+# We will inspect the main page bundle to see if updated CSS/JS logic is present.
+# Since SSR renders HTML, we should see the class names or inline styles if they are baked in.
+# We look for the inline style logic we added: 'background: transparent' for mobile dots.
+run_ssh_command("curl -s http://127.0.0.1:3003 | grep -o 'background:transparent'")
+run_ssh_command("curl -s http://127.0.0.1:3003 | grep -o 'backdrop-filter:none'")
+
+print("\n=== FINAL PM2 STATUS CHECK ===")
+run_ssh_command("pm2 list")

@@ -8,21 +8,25 @@ USER = 'root'
 PASS = 'R4+r525MP5DiBi'
 KEY = './deploy_key.pem'
 
-def run_ssh_command(command):
-    print(f"Running: {command}")
+# Command to check specific video sizes
+CMD_CHECK = """
+cd /root/honolulu/public/images/real
+ls -lh 20251221_123519.mp4 20251219_120404.mp4 20251220_102600.mp4 20251222_162628.mp4 20251226_202553.mp4
+"""
+
+def check_video_sizes():
     pid, fd = pty.fork()
     if pid == 0:
-        cmd_list = ['ssh', '-i', KEY, '-o', 'StrictHostKeyChecking=no', f'{USER}@{HOST}', command]
+        cmd_list = ['ssh', '-i', KEY, '-o', 'StrictHostKeyChecking=no', f'{USER}@{HOST}', CMD_CHECK]
         os.execvp('ssh', cmd_list)
     else:
         output = []
         password_sent = False
-        start_time = time.time()
         while True:
-            if time.time() - start_time > 10: break
             try:
                 data = os.read(fd, 1024)
-                if not data: break
+                if not data:
+                    break
                 chunk = data.decode(errors='ignore')
                 sys.stdout.write(chunk)
                 output.append(chunk)
@@ -30,11 +34,10 @@ def run_ssh_command(command):
                     time.sleep(0.5)
                     os.write(fd, (PASS + '\n').encode())
                     password_sent = True
-            except OSError: break
+            except OSError:
+                break
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+if __name__ == "__main__":
+    check_video_sizes()

@@ -22,7 +22,7 @@ export default function GlobalError({
             const now = Date.now();
             if (!lastReload || (now - parseInt(lastReload) > 10000)) {
                 sessionStorage.setItem('chunk_error_reload', now.toString());
-                window.location.reload();
+                window.location.href = window.location.origin + window.location.pathname + '?t=' + now;
             }
         }
     }, [error]);

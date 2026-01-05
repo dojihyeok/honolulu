@@ -34,7 +34,10 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== 1. Checking PM2 Process Info ===")
+run_ssh_command("pm2 describe honolulu")
+
+print("\n=== 2. Checking Remote File Content (Timeline.tsx) ===")
+# Check for the specific lines we modified. If 'blur' exists in the mobile dots section, update failed.
+run_ssh_command("grep -nC 5 'mobile-dots' /root/honolulu/src/components/Timeline.tsx")
+run_ssh_command("grep 'backdrop-filter' /root/honolulu/src/components/Timeline.tsx")

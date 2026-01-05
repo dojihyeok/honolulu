@@ -8,8 +8,17 @@ USER = 'root'
 PASS = 'R4+r525MP5DiBi'
 KEY = './deploy_key.pem'
 
+# Stop Honolulu
+CMD = """
+echo "=== Stopping Honolulu Service ==="
+pm2 stop honolulu
+
+echo "=== Checking Port 3003 (Should be empty) ==="
+lsof -i :3003 || echo "Port 3003 is free."
+"""
+
 def run_ssh_command(command):
-    print(f"Running: {command}")
+    print(f"Executing: {command}")
     pid, fd = pty.fork()
     if pid == 0:
         cmd_list = ['ssh', '-i', KEY, '-o', 'StrictHostKeyChecking=no', f'{USER}@{HOST}', command]
@@ -17,9 +26,9 @@ def run_ssh_command(command):
     else:
         output = []
         password_sent = False
-        start_time = time.time()
+        timer_start = time.time()
         while True:
-            if time.time() - start_time > 10: break
+            if time.time() - timer_start > 20: break
             try:
                 data = os.read(fd, 1024)
                 if not data: break
@@ -34,7 +43,5 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+if __name__ == "__main__":
+    run_ssh_command(CMD)

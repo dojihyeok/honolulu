@@ -14,11 +14,26 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <div style={{
+          position: 'fixed',
+          bottom: '10px',
+          right: '10px',
+          background: 'transparent',
+          color: 'rgba(0,0,0,0.5)',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          fontSize: '10px',
+          zIndex: 9999,
+          pointerEvents: 'none',
+          fontFamily: 'monospace'
+        }}>
+          v0.23
+        </div>
+      </body>
     </html>
   )
 }

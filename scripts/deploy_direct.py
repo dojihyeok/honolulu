@@ -92,6 +92,7 @@ def deploy():
         f"cd {REMOTE_DEST}",
         f"tar -xzf {LOCAL_ARCHIVE}",
         "npm install --legacy-peer-deps",
+        "rm -rf .next",  # Force clean build
         "npm run build",
         f"pm2 restart {APP_NAME}"
     ]

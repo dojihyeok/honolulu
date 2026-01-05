@@ -19,7 +19,7 @@ def run_ssh_command(command):
         password_sent = False
         start_time = time.time()
         while True:
-            if time.time() - start_time > 10: break
+            if time.time() - start_time > 15: break
             try:
                 data = os.read(fd, 1024)
                 if not data: break
@@ -34,7 +34,9 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== CHECKING REMOTE ECOSYSTEM CONFIG ===")
+# Read the file content to see what PORT is set
+run_ssh_command("cat /root/honolulu/ecosystem.config.js")
+
+print("\n=== CHECKING IF 3007 IS STILL HOGGED ===")
+run_ssh_command("lsof -i :3007")

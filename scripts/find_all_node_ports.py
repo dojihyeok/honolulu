@@ -8,8 +8,11 @@ USER = 'root'
 PASS = 'R4+r525MP5DiBi'
 KEY = './deploy_key.pem'
 
+# List directories
+CMD = "sudo lsof -i -P -n | grep LISTEN | grep node && ps -aux | grep next"
+
 def run_ssh_command(command):
-    print(f"Running: {command}")
+    print(f"Executing: {command}")
     pid, fd = pty.fork()
     if pid == 0:
         cmd_list = ['ssh', '-i', KEY, '-o', 'StrictHostKeyChecking=no', f'{USER}@{HOST}', command]
@@ -17,24 +20,26 @@ def run_ssh_command(command):
     else:
         output = []
         password_sent = False
-        start_time = time.time()
+        timer_start = time.time()
         while True:
-            if time.time() - start_time > 10: break
+            if time.time() - timer_start > 20:
+                break
             try:
                 data = os.read(fd, 1024)
-                if not data: break
+                if not data:
+                    break
                 chunk = data.decode(errors='ignore')
                 sys.stdout.write(chunk)
-                output.append(chunk)
+                output.append(chunk) # capture output
+                
                 if not password_sent and ("password:" in chunk.lower() or "passphrase" in chunk.lower()):
                     time.sleep(0.5)
                     os.write(fd, (PASS + '\n').encode())
                     password_sent = True
-            except OSError: break
+            except OSError:
+                break
+        
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print(run_ssh_command(CMD))

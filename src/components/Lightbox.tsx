@@ -25,7 +25,11 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
     const PROGRESS_UPDATE_MS = 50;
 
     // Reset state when opening or changing index externally
-
+    useEffect(() => {
+        setCurrentIndex(initialIndex);
+        setProgress(0);
+        setIsPaused(false);
+    }, [initialIndex, isOpen]);
 
     // Handle navigation
     const goNext = useCallback(() => {
@@ -166,7 +170,7 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
                         <h3 className="story-title">{title}</h3>
                     </div>
                     <div className="story-controls">
-
+                        {/* Download button removed as requested */}
                         <button className="close-btn" onClick={onClose}>&times;</button>
                     </div>
                 </div>
@@ -215,18 +219,11 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
                     position: relative;
                     width: 100%;
                     height: 100%;
-                    max-width: 500px; /* Mobile story width */
+                    max-width: 100%; /* Full screen width */
                     background: black;
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
-                }
-                
-                @media (min-width: 501px) {
-                     .story-container {
-                        height: 90vh;
-                        border-radius: 16px;
-                     }
                 }
 
                 .progress-container {
@@ -287,23 +284,33 @@ export default function Lightbox({ isOpen, media, initialIndex = 0, title, date,
 
                 .story-controls {
                     display: flex;
-                    gap: 16px;
+                    gap: 8px;
                     align-items: center;
+                    margin-right: -12px;
                 }
 
-                .mute-btn, .close-btn {
-                    background: none;
-                    border: none;
-                    color: white;
+                .close-btn {
+                    background: rgba(0, 0, 0, 0.3);
+                    border-radius: 50%;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    color: #FFFFFF;
                     font-size: 1.5rem;
                     cursor: pointer;
-                    padding: 4px;
-                    line-height: 1;
-                    opacity: 0.8;
+                    padding: 8px;
+                    line-height: 0;
+                    opacity: 1;
+                    backdrop-filter: blur(4px);
+                    z-index: 2030;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
                 }
                 
-                .mute-btn:hover, .close-btn:hover {
+                .close-btn:hover {
                     opacity: 1;
+                    background: rgba(0, 0, 0, 0.5);
                 }
 
                 .nav-layer {

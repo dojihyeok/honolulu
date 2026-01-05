@@ -34,7 +34,14 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== REMOVING CONFLICTING NGINX CONFIG ===")
+# Remove the old symlink
+run_ssh_command("rm -f /etc/nginx/sites-enabled/honolulu.dojiung.com")
+# Remove the old available file (optional, but cleaner)
+run_ssh_command("rm -f /etc/nginx/sites-available/honolulu.dojiung.com")
+
+print("\n=== RELOADING NGINX ===")
+run_ssh_command("nginx -t && systemctl restart nginx")
+
+print("\n=== VERIFICATION ===")
+run_ssh_command("ls -l /etc/nginx/sites-enabled/ | grep honolulu")

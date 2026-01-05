@@ -2,6 +2,7 @@ import pty
 import os
 import sys
 import time
+import re
 
 HOST = '49.50.139.88'
 USER = 'root'
@@ -34,7 +35,15 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== 1. CHECKING NGINX SITES-ENABLED ===")
+run_ssh_command("ls -l /etc/nginx/sites-enabled/")
+run_ssh_command("grep -r 'honolulu.dojiung.com' /etc/nginx/sites-enabled/")
+
+print("\n=== 2. CHECKING ACTIVE PORTS ===")
+# Check if 3007 is listening
+run_ssh_command("lsof -i :3007")
+# Check if 3003 is still listening (it should ideally be empty if we moved)
+run_ssh_command("lsof -i :3003")
+
+print("\n=== 3. CHECKING PM2 STATUS ===")
+run_ssh_command("pm2 list")

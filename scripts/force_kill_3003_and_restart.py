@@ -19,7 +19,7 @@ def run_ssh_command(command):
         password_sent = False
         start_time = time.time()
         while True:
-            if time.time() - start_time > 10: break
+            if time.time() - start_time > 15: break
             try:
                 data = os.read(fd, 1024)
                 if not data: break
@@ -34,7 +34,30 @@ def run_ssh_command(command):
         _, status = os.waitpid(pid, 0)
         return "".join(output)
 
-print("=== PM2 Error Logs (Last 100 lines) ===")
-run_ssh_command("tail -n 100 /root/.pm2/logs/honolulu-error.log")
-print("\n=== PM2 Out Logs (Last 20 lines) ===")
-run_ssh_command("tail -n 20 /root/.pm2/logs/honolulu-out.log")
+print("=== KILLING PROCESS ON PORT 3003 ===")
+# 1. Stop PM2 process first to prevent auto-restart war
+run_ssh_command("pm2 stop honolulu || true")
+run_ssh_command("pm2 delete honolulu || true")
+
+# 2. Find and Kill the zombie process holding port 3003
+kill_cmd = """
+PID=$(lsof -t -i:3003)
+if [ -n "$PID" ]; then
+    echo "Found zombie process $PID on 3003. Killing..."
+    kill -9 $PID
+else
+    echo "Port 3003 is clean."
+fi
+"""
+run_ssh_command(kill_cmd)
+
+# 3. Double Check
+run_ssh_command("lsof -i :3003")
+
+print("\n=== RESTARTING HONOLULU ===")
+# 4. Start Fresh
+run_ssh_command("cd /root/honolulu && pm2 start ecosystem.config.js && pm2 save")
+
+print("\n=== STATUS CHECK ===")
+run_ssh_command("pm2 list")
+run_ssh_command("curl -I http://127.0.0.1:3003")

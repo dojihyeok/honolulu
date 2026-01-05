@@ -34,8 +34,8 @@
   /* Very rounded, bubbly */
 
   /* Typography */
-  --font-sans: 'Gaegu', cursive;
-  --font-serif: 'Gaegu', cursive;
+  --font-sans: 'MaruBuri', serif;
+  --font-serif: 'MaruBuri', serif;
 }
 
 @media (prefers-color-scheme: dark) {

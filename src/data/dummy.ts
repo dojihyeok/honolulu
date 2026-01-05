@@ -6,6 +6,9 @@ export type MediaItem = {
     alt?: string;
     width?: number; // Optional for timeline, required for gallery usually
     height?: number;
+    date?: string;
+    time?: string;
+    region?: string;
 };
 
 export type TimelineItem = {
@@ -27,6 +30,9 @@ export type GalleryItem = {
     alt: string;
     width: number;
     height: number;
+    date?: string;
+    time?: string;
+    region?: string;
 };
 
 // Real-like placeholder images from Unsplash Source
